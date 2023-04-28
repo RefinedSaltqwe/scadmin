@@ -437,7 +437,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext){
                                 currentThreadObject: JSON.parse(safeJsonStringify(currentThreadObject[0])),
                             },
                         };
-                } else {
+                } 
+                else {
                     return {
                         redirect: {
                             destination: `/scenes/error/404`,
@@ -445,7 +446,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext){
                         },
                     };
                 }
-            } else {
+            } 
+            else {
                 if(threadId != undefined || threadId != ""){
                     return {
                         redirect: {
@@ -469,7 +471,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext){
         console.log("getServerSideProps error - [threads.tsx]", error);
         return {
             redirect: {
-                destination: '/scenes/error/404',
+                destination: '/scenes/error/405',
                 permanent: false,
             },
         };
