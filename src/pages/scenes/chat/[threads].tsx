@@ -476,12 +476,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext){
         }
     } catch (error) {
         console.log("getServerSideProps error - [threads.tsx]", error);
-        return { 
-            props: {
-                ok: false, 
-                reason: "some error description for your own consumption, not for client side"
+        return {
+            redirect: {
+                destination: '/scenes/error/404',
+                permanent: false,
             },
-        }
+        };
     }
 }
 export default Chat;
