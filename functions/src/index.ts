@@ -1,5 +1,5 @@
-import * as functions from "firebase-functions";
-import * as admin from "firebase-admin";
+// import * as functions from "firebase-functions";
+// import * as admin from "firebase-admin";
 
 
 // ***********IMPORTANT***********************
@@ -12,14 +12,14 @@ import * as admin from "firebase-admin";
 // This will trigger when new user is created
 // After the user has been created, this script will grab the new user from Authentication and save to Firestore
 
-admin.initializeApp();
-const db = admin.firestore();
+// admin.initializeApp();
+// const db = admin.firestore();
 
-export const createUserDocument = functions.auth
-  .user()
-  .onCreate(async (user) => {
-    db.collection("users")
-      .doc(user.uid)
-      .set(JSON.parse(JSON.stringify(user)));
-});
+// export const createUserDocument = functions.auth
+//   .user()
+//   .onCreate(async (user) => {
+//     db.collection("users")
+//       .doc(user.uid)
+//       .set(JSON.parse(JSON.stringify(user)));
+// });
 
