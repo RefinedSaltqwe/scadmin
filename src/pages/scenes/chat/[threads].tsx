@@ -10,7 +10,7 @@ import { auth, firestore } from '@/firebase/clientApp';
 import useNavigation from '@/hooks/useNavigation';
 import useRgbConverter from '@/hooks/useRgbConverter';
 import { tokens } from '@/mui/theme';
-import { Box, Typography, useTheme } from '@mui/material';
+import { Typography, useTheme } from '@mui/material';
 import { collection, doc, getDoc, getDocs, limit, onSnapshot, orderBy, query, serverTimestamp, Timestamp, updateDoc, where, writeBatch } from 'firebase/firestore';
 import { GetServerSidePropsContext } from 'next';
 import dynamic from 'next/dynamic';
@@ -19,21 +19,11 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useSetRecoilState } from 'recoil';
 import safeJsonStringify from 'safe-json-stringify';
 
-const ScapInsideLoading = dynamic(() => import("@/components/ScapComponents/insideLoadings"),{
-    ssr: false
-});
+const ChatMessages = dynamic(() => import("@/components/Chat/ChatMessages"));
 
-const ChatMessages = dynamic(() => import("@/components/Chat/ChatMessages"), {
-    ssr: false
-});
+const AddPeople = dynamic(() => import("@/components/Modal/Chat/AddPeople"));
 
-const AddPeople = dynamic(() => import("@/components/Modal/Chat/AddPeople"),{
-    ssr: false
-});
-
-const Links = dynamic(() => import("@/components/Modal/Chat/Links"), {
-    ssr: false
-});
+const Links = dynamic(() => import("@/components/Modal/Chat/Links"));
 
 type ChatProps = {
     currentThread: string;
