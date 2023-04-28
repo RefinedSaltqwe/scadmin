@@ -24,8 +24,7 @@ const ScapInsideLoading = dynamic(() => import("@/components/ScapComponents/insi
 });
 
 const ChatMessages = dynamic(() => import("@/components/Chat/ChatMessages"), {
-    ssr: false,
-    // loading: () => <Box sx={{ flexGrow:1, height: "100%", display: "flex", flexDirection: "column", position: "relative"}}><ScapInsideLoading/></Box>
+    ssr: false
 });
 
 const AddPeople = dynamic(() => import("@/components/Modal/Chat/AddPeople"),{
