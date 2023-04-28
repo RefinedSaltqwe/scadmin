@@ -81,8 +81,8 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
                                 setChatThreadsValue((prev) => ({
                                     ...prev,
                                     threads: [threadItem, ...prev.threads],
-                                    currentThreadId: threadItem.id,
-                                    selectedThreadsArray: [...prev.selectedThreadsArray, threadItem.id] as string[]
+                                    // currentThreadId: threadItem.id,
+                                    // selectedThreadsArray: [...prev.selectedThreadsArray, threadItem.id] as string[]
                                 }));
                                 // navigatePage(`/scenes/chat/u=${user?.uid}=threadKey=${threadItem.id}`);
                             }
@@ -377,10 +377,10 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
 
 export async function getServerSideProps(context: GetServerSidePropsContext){
     const { res } = context;
-    res.setHeader(
-        'Cache-Control',
-        'public, s-maxage=10, stale-while-revalidate=59'
-    );
+    // res.setHeader(
+    //     'Cache-Control',
+    //     'public, s-maxage=10, stale-while-revalidate=59'
+    // );
     try {
         //GET threads
         const url = context.query.threads as string;
@@ -427,7 +427,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext){
                     await updateDoc(updateUserRef, {
                         currentThread: threadId,
                     });
-                        
                         return {
                             props: {
                                 currentThread: threadId,
@@ -471,7 +470,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext){
         console.log("getServerSideProps error - [threads.tsx]", error);
         return {
             redirect: {
-                destination: '/scenes/error/405',
+                destination: '/scenes/error/404',
                 permanent: false,
             },
         };
