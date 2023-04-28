@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "admin-and-ecommerce"
-  }
+    "default": "admin-and-ecommerce",
+    "scadmin": "admin-and-ecommerce"
+  },
+  "targets": {},
+  "etags": {}
 }
