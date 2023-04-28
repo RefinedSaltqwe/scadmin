@@ -10,9 +10,9 @@ import { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-// import "nprogress/nprogress.css";
 import { RecoilEnv, RecoilRoot } from 'recoil';
 import "../styles/globals.css";
+import NextNProgress from 'nextjs-progressbar';
 
 // * Analytics
 if(typeof window !== 'undefined'){
@@ -22,13 +22,6 @@ if(typeof window !== 'undefined'){
 // * Client-side cache, shared for the whole session of the user in the browser.
 RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false;
 const clientSideEmotionCache = createEmotionCache();
-
-// const TopProgressBar = dynamic(
-//   () => {
-//     return import("../components/TopProgressBar");
-//   },
-//   { ssr: false },
-// );
 
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
@@ -92,6 +85,7 @@ export default function MyApp(props: MyAppProps) {
             />
             <CssBaseline />
             {/* <TopProgressBar /> */}
+            <NextNProgress color="#6466f1" startPosition={0.3} stopDelayMs={200} height={3} showOnShallow={true} />
             <Layout>
               <Component {...pageProps} />
             </Layout>
