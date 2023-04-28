@@ -84,7 +84,7 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
                                     currentThreadId: threadItem.id,
                                     selectedThreadsArray: [...prev.selectedThreadsArray, threadItem.id] as string[]
                                 }));
-                                navigatePage(`/scenes/chat/u=${user?.uid}=threadKey=${threadItem.id}`);
+                                // navigatePage(`/scenes/chat/u=${user?.uid}=threadKey=${threadItem.id}`);
                             }
                             else {
                                 setChatThreadsValue((prev) => ({
