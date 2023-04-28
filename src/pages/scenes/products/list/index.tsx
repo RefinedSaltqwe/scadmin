@@ -172,7 +172,7 @@ const ProductsList:React.FC<ProductsListProps> = () => {
                     </ScapPrimaryButton>
                 </Box>
             </FlexBetween>
-            {/* BODY */}
+            {/* BODYs */}
             <FlexBetween m="25px 0 0 0" sx={{width: "100%", height: "100%", flexDirection: "column", flexGrow: 1}}>
                 <Box
                     sx={{
