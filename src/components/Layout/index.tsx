@@ -69,6 +69,7 @@ const Layout:React.FC<LayoutProps> = ({ children }) => {
         if(pathArray[2] === 'chat'){
             setMenuStateValue({...menuStateValue, pageName: pathArray[2]});
         }
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [router.asPath]);
     
     return (

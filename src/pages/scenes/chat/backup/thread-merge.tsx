@@ -76,9 +76,11 @@ const Chat:React.FC<ChatProps> = ({ currentThread }) => {
         
         getAllUsers();
         getUserThreads();
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
     useEffect(() => {
         console.log("Current Thread: ", chatThreadsValue.threads); //NEW
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     },[currentThread])
     
     return (
