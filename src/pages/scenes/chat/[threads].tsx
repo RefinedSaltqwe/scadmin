@@ -322,6 +322,12 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
                 currentSelectedThread: currentThreadObject as ThreadRef,
             }));
         }
+        // const currentThreadObjectz = sortedThreads.filter(item => item.id === currentThread);
+        // setChatThreadsValue((prev) => ({
+        //     ...prev,
+        //     currentSelectedThread: currentThreadObjectz[0] as ThreadRef,
+        // }));
+        console.log(currentThreadObject)
     }
 
 
