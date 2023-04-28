@@ -19,6 +19,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/pages/scenes/orders/index.tsx", "src/firebase-messaging-sw.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/pages/scenes/orders/index.tsx", "src/firebase-messaging-sw.js", "src/components/TopProgressBar/TopPrgressBar.js"],
   "exclude": ["node_modules"]
 }
