@@ -376,102 +376,111 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext){
-    const { res } = context;
-    res.setHeader(
-        'Cache-Control',
-        'public, s-maxage=10, stale-while-revalidate=59'
-    );
-    try {
-        //GET threads
-        const url = context.query.threads as string;
-        const urlArray = url.split("=");
-        const uid = urlArray[1];
-        let threadId = urlArray[3];
+    // const { res } = context;
+    // res.setHeader(
+    //     'Cache-Control',
+    //     'public, s-maxage=10, stale-while-revalidate=59'
+    // );
+    // try {
+    //     //GET threads
+    //     const url = context.query.threads as string;
+    //     const urlArray = url.split("=");
+    //     const uid = urlArray[1];
+    //     let threadId = urlArray[3];
 
-        //GET USER THREADS
-        const myThreadSnippitsRef = query(collection(firestore, `users/${uid}/threadSnippits`));
-        const threadsQuerySnapshot = await getDocs(myThreadSnippitsRef);
-        const myThreadsSnippits = threadsQuerySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data()
-        }));
-        const itemsDocs = await Promise.all(myThreadsSnippits.map(item => getDoc(doc(firestore, 'threads', item.id))));
-        const threads = itemsDocs.map((item) => ({
-            id: item.id,
-            ...item.data()
-        } as ThreadRef ));
-        const spreadThreadsForSorting = [...threads];
-        const sortedThreads = spreadThreadsForSorting.sort((a,b) =>  b.latestMessageCreatedAt!.seconds - a.latestMessageCreatedAt!.seconds);
-        //GET ALL USERS
-        const userRef = query(collection(firestore, "users"));
-        const userQuerySnapshot = await getDocs(userRef);
-        const allUsers = userQuerySnapshot.docs.map((doc) => ({
-            uid: doc.id,
-            firstName: doc.data().firstName,
-            lastName: doc.data().lastName,
-            email: doc.data().email,
-            userType: doc.data().userType
-        })); 
-        // SET CURRENT SELECTED THREAD
-        const currentThreadObject = sortedThreads.filter(item => item.id === threadId);
+    //     //GET USER THREADS
+    //     const myThreadSnippitsRef = query(collection(firestore, `users/${uid}/threadSnippits`));
+    //     const threadsQuerySnapshot = await getDocs(myThreadSnippitsRef);
+    //     const myThreadsSnippits = threadsQuerySnapshot.docs.map((doc) => ({
+    //         id: doc.id,
+    //         ...doc.data()
+    //     }));
+    //     const itemsDocs = await Promise.all(myThreadsSnippits.map(item => getDoc(doc(firestore, 'threads', item.id))));
+    //     const threads = itemsDocs.map((item) => ({
+    //         id: item.id,
+    //         ...item.data()
+    //     } as ThreadRef ));
+    //     const spreadThreadsForSorting = [...threads];
+    //     const sortedThreads = spreadThreadsForSorting.sort((a,b) =>  b.latestMessageCreatedAt!.seconds - a.latestMessageCreatedAt!.seconds);
+    //     //GET ALL USERS
+    //     const userRef = query(collection(firestore, "users"));
+    //     const userQuerySnapshot = await getDocs(userRef);
+    //     const allUsers = userQuerySnapshot.docs.map((doc) => ({
+    //         uid: doc.id,
+    //         firstName: doc.data().firstName,
+    //         lastName: doc.data().lastName,
+    //         email: doc.data().email,
+    //         userType: doc.data().userType
+    //     })); 
+    //     // SET CURRENT SELECTED THREAD
+    //     const currentThreadObject = sortedThreads.filter(item => item.id === threadId);
 
-        if(threadId){
-            const docRef = doc(firestore, "threads", threadId);
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-                const checkIfUserIsMemberRef = doc(firestore, `users/${uid}/threadSnippits`, threadId);
-                const checkIfUserIsMemberSnap = await getDoc(checkIfUserIsMemberRef);
-                if (checkIfUserIsMemberSnap.exists()) {
-                    //UPDATE current THREAD
-                    const updateUserRef = doc(firestore, "users", uid);
-                    await updateDoc(updateUserRef, {
-                        currentThread: threadId,
-                    });
-                    return {
-                        props: {
-                            currentThread: threadId,
-                            myUID: uid,
-                            sortedThreads: JSON.parse(safeJsonStringify(sortedThreads)),
-                            allUsers: JSON.parse(safeJsonStringify(allUsers)),
-                            currentThreadObject: JSON.parse(safeJsonStringify(currentThreadObject[0])),
-                        },
-                    };
-                } else {
-                    return {
-                        redirect: {
-                            destination: `/scenes/error/404`,
-                            permanent: false,
-                        },
-                    };
-                }
-            } else {
-                if(threadId != undefined || threadId != ""){
-                    return {
-                        redirect: {
-                            destination: '/scenes/error/404',
-                            permanent: false,
-                        },
-                    };
-                }
-            }
-        }  else {
-            return {
-                props: {
-                    currentThread: threadId,
-                    myUID: uid,
-                    sortedThreads: JSON.parse(safeJsonStringify(sortedThreads)),
-                    allUsers: JSON.parse(safeJsonStringify(allUsers)),
-                },
-            };
-        }
-    } catch (error) {
-        console.log("getServerSideProps error - [threads.tsx]", error);
-        return {
-            redirect: {
-                destination: '/scenes/error/404',
-                permanent: false,
-            },
-        };
-    }
+    //     if(threadId){
+    //         const docRef = doc(firestore, "threads", threadId);
+    //         const docSnap = await getDoc(docRef);
+    //         if (docSnap.exists()) {
+    //             const checkIfUserIsMemberRef = doc(firestore, `users/${uid}/threadSnippits`, threadId);
+    //             const checkIfUserIsMemberSnap = await getDoc(checkIfUserIsMemberRef);
+    //             if (checkIfUserIsMemberSnap.exists()) {
+    //                 //UPDATE current THREAD
+    //                 const updateUserRef = doc(firestore, "users", uid);
+    //                 await updateDoc(updateUserRef, {
+    //                     currentThread: threadId,
+    //                 });
+                        return {
+                            props: {
+                                currentThread: "",
+                                myUID: "Pic3CvVbvAPsz1ZVqBKHtiNL2oq1",
+                                sortedThreads: {},
+                                allUsers: {},
+                                currentThreadObject: {},
+                            },
+                        };
+                        // return {
+                        //     props: {
+                        //         currentThread: threadId,
+                        //         myUID: uid,
+                        //         sortedThreads: JSON.parse(safeJsonStringify(sortedThreads)),
+                        //         allUsers: JSON.parse(safeJsonStringify(allUsers)),
+                        //         currentThreadObject: JSON.parse(safeJsonStringify(currentThreadObject[0])),
+                        //     },
+                        // };
+    //             } else {
+    //                 return {
+    //                     redirect: {
+    //                         destination: `/scenes/error/404`,
+    //                         permanent: false,
+    //                     },
+    //                 };
+    //             }
+    //         } else {
+    //             if(threadId != undefined || threadId != ""){
+    //                 return {
+    //                     redirect: {
+    //                         destination: '/scenes/error/404',
+    //                         permanent: false,
+    //                     },
+    //                 };
+    //             }
+    //         }
+    //     }  else {
+    //         return {
+    //             props: {
+    //                 currentThread: threadId,
+    //                 myUID: uid,
+    //                 sortedThreads: JSON.parse(safeJsonStringify(sortedThreads)),
+    //                 allUsers: JSON.parse(safeJsonStringify(allUsers)),
+    //             },
+    //         };
+    //     }
+    // } catch (error) {
+    //     console.log("getServerSideProps error - [threads.tsx]", error);
+    //     return {
+    //         redirect: {
+    //             destination: '/scenes/error/404',
+    //             permanent: false,
+    //         },
+    //     };
+    // }
 }
 export default Chat;
