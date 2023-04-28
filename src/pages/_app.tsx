@@ -84,8 +84,7 @@ export default function MyApp(props: MyAppProps) {
               }}
             />
             <CssBaseline />
-            {/* <TopProgressBar /> */}
-            <NextNProgress color="#6466f1" startPosition={0.3} stopDelayMs={200} height={3} showOnShallow={true} />
+            <NextNProgress color="#6466f1" startPosition={0.3} stopDelayMs={200} height={3} showOnShallow={true} options={{ easing: 'ease', speed: 500 }}/>
             <Layout>
               <Component {...pageProps} />
             </Layout>

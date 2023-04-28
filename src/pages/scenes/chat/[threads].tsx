@@ -19,11 +19,11 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useSetRecoilState } from 'recoil';
 import safeJsonStringify from 'safe-json-stringify';
 
-const ChatMessages = dynamic(() => import("@/components/Chat/ChatMessages"));
+const ChatMessages = dynamic(() => import("@/components/Chat/ChatMessages"),{ssr: false});
 
-const AddPeople = dynamic(() => import("@/components/Modal/Chat/AddPeople"));
+const AddPeople = dynamic(() => import("@/components/Modal/Chat/AddPeople"),{ssr: false});
 
-const Links = dynamic(() => import("@/components/Modal/Chat/Links"));
+const Links = dynamic(() => import("@/components/Modal/Chat/Links"),{ssr: false});
 
 type ChatProps = {
     currentThread: string;
