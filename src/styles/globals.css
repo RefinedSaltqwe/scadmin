@@ -1,0 +1,16 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800,900&display=swap'); */
+
+html,
+body,
+#root,
+.app {
+  height: 100%;
+  width: 100%;
+}
+#leftDrawer.transform{
+  transition: all .5s ease;
+}
+
+#leftDrawer.transform-active{
+width: 0%;
+}
