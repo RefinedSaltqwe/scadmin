@@ -157,6 +157,7 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
                     }
                 });
                 thread.forEach(threadItem => {
+                    // console.log(source, thread.length, dataFetchedOnSnapShotRef.current)
                     if(source == "Server" &&  thread.length > 0 && dataFetchedOnSnapShotRef.current){
                         let threadSeen: string[] = [];
                         threadSeen = [...threadItem.threadSeen];
@@ -170,9 +171,9 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
                             // ? UPDATING State with multiple Objects without deleting
                             setChatThreadsValue((prev) => ({
                                 ...prev,
-                                threads: prev.threads.map((thread, index) => 
+                                threads: prev.threads.map((thread1, index) => 
                                     // index === indexOfSeenThread ? seenMessage : obj
-                                    thread.id === threadItem.id ? threadItem : thread
+                                    thread1.id === threadItem.id ? threadItem : thread1
                                 ),
                             }));
                         }

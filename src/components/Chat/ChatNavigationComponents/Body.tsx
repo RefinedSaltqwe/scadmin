@@ -125,7 +125,7 @@ const NavBody:React.FC<NavBodyProps> = ({hex2rgb, theme, colors, tabVal, setTabT
         setTabUnreadMessage({
             staff: staff,
             customerSupport: customer
-        })
+        });
     //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [chatThreadsValue.threads, chatThreadsValue.currentThreadId, user])
 
