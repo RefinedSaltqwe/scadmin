@@ -35,7 +35,8 @@ const Links:React.FC<LinksProps> = () => {
     const resetList = useResetRecoilState(linksAtomState);
     const [addButtonIsDisabled, setAddButtonIsDisbaled] = useState(true);
     const [error, setError] = useState("");
-    const linksClose = () => setOpen(false);
+    const [creatingThreadLoading, setCreatingThreadLoading] = useState(false);
+    const linksClose = () => {setOpen(false); setCreatingThreadLoading(false);};
 
     //Triggers when user types on textfield
     //The main purpose is to disable add button when field is empty or null
@@ -97,7 +98,7 @@ const Links:React.FC<LinksProps> = () => {
     };
     //CONNECT TO A PERSON
     const handleCreateConnection = async () => {
-        
+        setCreatingThreadLoading(true);
         let connections = linksAtomValue.values.map(item => item.uid);
         let privateThreadId1 = connections.map(item => item! + user?.uid);
         let privateThreadIdReversed = connections.map(item => user?.uid + item!);
@@ -170,9 +171,10 @@ const Links:React.FC<LinksProps> = () => {
 
                 //CREATE dummy message
                 transaction.set(doc(firestore, `threads/${threadId1}/messages`, "_dummy"), dummyMessage);
-
-                navigatePage(`/scenes/chat/u=${user?.uid}=threadKey=${threadId1}`);
-
+                setTimeout(()=>{
+                    navigatePage(`/scenes/chat/u=${user?.uid}=threadKey=${threadId1}`);
+                },400)
+                setCreatingThreadLoading(false);
                 setOpen(false);
                 resetList();
             });
@@ -183,6 +185,7 @@ const Links:React.FC<LinksProps> = () => {
     }
     //CREATE GROUP CHAT
     const handleCreateGroup = async () => {
+        setCreatingThreadLoading(true);
         let connections = linksAtomValue.values.map(item => item.uid);
         connections.push(user!.uid!);
         let threadSeen: string [] = [];
@@ -240,7 +243,6 @@ const Links:React.FC<LinksProps> = () => {
                 if(!threadDoc.exists()){
                     throw new Error(`Sorry, thread wasn't created. Try another.`);
                 }
-                console.log(createThreadRef.id);
                 //WRITE
                 //CREATE dummy message
                 transaction.set(doc(firestore, `threads/${createThreadRef.id}/messages`, "_dummy"), dummyMessage);
@@ -248,8 +250,11 @@ const Links:React.FC<LinksProps> = () => {
                 connections.forEach(userId => {
                     transaction.set(doc(firestore, `users/${userId}/threadSnippits`, createThreadRef.id), newUserThread);
                 });
-                navigatePage(`/scenes/chat/u=${user?.uid}=threadKey=${createThreadRef.id}`);
+                setTimeout(()=>{
+                    navigatePage(`/scenes/chat/u=${user?.uid}=threadKey=${createThreadRef.id}`);
+                },400)
             });
+            setCreatingThreadLoading(false);
             setOpen(false);
             resetList();
         } catch (err: any) {
@@ -315,7 +320,7 @@ const Links:React.FC<LinksProps> = () => {
                                 {FIREBASE_ERRORS[error as keyof typeof FIREBASE_ERRORS]}
                             </Typography>
                             <ScapPrimaryButton onClick={linksSubmit} type="submit" theme={theme} fullWidth color="primary" variant="contained" sx={{mt: 2}} disabled={linksAtomValue.values.length == 0}>
-                                {false ? (<CircularProgress size={26} sx={{color: "white"}}/>)  : linksAtomValue.values.length > 1 ? <>Create Group</> : <>Create Connection</>}
+                                {creatingThreadLoading ? (<CircularProgress size={26} sx={{color: "white"}}/>)  : linksAtomValue.values.length > 1 ? <>Create Group</> : <>Create Connection</>}
                             </ScapPrimaryButton>
                         </FlexBetween>
                     </Box>

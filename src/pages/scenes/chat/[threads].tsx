@@ -10,7 +10,7 @@ import { auth, firestore } from '@/firebase/clientApp';
 import useNavigation from '@/hooks/useNavigation';
 import useRgbConverter from '@/hooks/useRgbConverter';
 import { tokens } from '@/mui/theme';
-import { Typography, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import { collection, doc, getDoc, getDocs, limit, onSnapshot, orderBy, query, serverTimestamp, Timestamp, updateDoc, where, writeBatch } from 'firebase/firestore';
 import { GetServerSidePropsContext } from 'next';
 import dynamic from 'next/dynamic';
@@ -75,11 +75,9 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
                 // PREVENTS the listener from executing twice when the createdAt changes from null to Timestamp
                 // Server when timestamp is changed
                 thread.forEach(threadItem => {
-                    console.log(source, thread.length, threadItem, threadItem.id, dataFetchedOnSnapShotRef.current)
                     if(source == "Server" &&  thread.length > 0 && dataFetchedOnSnapShotRef.current){
                         if(threadItem.changeType === "added"){
                             if(threadItem.createdBy === user?.uid){
-                                console.log("In", user?.uid);
                                 setChatThreadsValue((prev) => ({
                                     ...prev,
                                     threads: [threadItem, ...prev.threads],
@@ -357,10 +355,13 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
             listenToNewThread();
             listenToUnseenMessages();
             dataFetchedRef.current = true;
-            if(currentThreadObject === undefined){
-                dataFetchedOnSnapShotRef.current = true;
-            }
         } 
+        if(currentThreadObject === undefined){
+            setTimeout(()=>{
+                dataFetchedOnSnapShotRef.current = true;
+            }, 3500);
+        }
+        
         return () => {
             controller.abort();
         }
@@ -387,10 +388,10 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
 
 export async function getServerSideProps(context: GetServerSidePropsContext){
     const { res } = context;
-    // res.setHeader(
-    //     'Cache-Control',
-    //     'public, s-maxage=10, stale-while-revalidate=59'
-    // );
+    res.setHeader(
+        'Cache-Control',
+        'public, s-maxage=10, stale-while-revalidate=59'
+    );
     try {
         //GET threads
         const url = context.query.threads as string;
