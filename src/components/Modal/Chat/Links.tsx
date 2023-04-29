@@ -8,6 +8,7 @@ import ScapPrimaryTextField from '@/components/ScapComponents/PrimaryTextField';
 import { auth, firestore } from '@/firebase/clientApp';
 import { FIREBASE_ERRORS } from '@/firebase/errors';
 import useMediaQueryHook from '@/hooks/useMediaQueryHook';
+import useNavigation from '@/hooks/useNavigation';
 import useRgbConverter from '@/hooks/useRgbConverter';
 import { tokens } from '@/mui/theme';
 import { Backdrop, Box, Chip, CircularProgress, Divider, Fade, Modal, Stack, Typography, useTheme } from '@mui/material';
@@ -26,6 +27,7 @@ const Links:React.FC<LinksProps> = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const { isMobile } = useMediaQueryHook();
+    const { navigatePage } = useNavigation();
     const { hex2rgb } = useRgbConverter();
     const [open, setOpen] = useRecoilState(modalLinksOpen);
     const setChatThreadsValue = useSetRecoilState(chatThreadsState)
@@ -169,6 +171,8 @@ const Links:React.FC<LinksProps> = () => {
                 //CREATE dummy message
                 transaction.set(doc(firestore, `threads/${threadId1}/messages`, "_dummy"), dummyMessage);
 
+                navigatePage(`/scenes/chat/u=${user?.uid}=threadKey=${threadId1}`);
+                
                 setOpen(false);
                 resetList();
             });
@@ -236,15 +240,15 @@ const Links:React.FC<LinksProps> = () => {
                 if(!threadDoc.exists()){
                     throw new Error(`Sorry, thread wasn't created. Try another.`);
                 }
-                console.log(createThreadRef.id)
+                console.log(createThreadRef.id);
                 //WRITE
                 //CREATE dummy message
                 transaction.set(doc(firestore, `threads/${createThreadRef.id}/messages`, "_dummy"), dummyMessage);
                 //CREATE thread on users
                 connections.forEach(userId => {
                     transaction.set(doc(firestore, `users/${userId}/threadSnippits`, createThreadRef.id), newUserThread);
-                })
-                
+                });
+                navigatePage(`/scenes/chat/u=${user?.uid}=threadKey=${createThreadRef.id}`);
             });
             setOpen(false);
             resetList();

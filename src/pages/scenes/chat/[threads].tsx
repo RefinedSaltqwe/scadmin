@@ -75,14 +75,16 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
                 // PREVENTS the listener from executing twice when the createdAt changes from null to Timestamp
                 // Server when timestamp is changed
                 thread.forEach(threadItem => {
+                    console.log(source, threadItem, threadItem.id)
                     if(source == "Server" &&  thread.length > 0 && dataFetchedOnSnapShotRef.current){
                         if(threadItem.changeType === "added"){
                             if(threadItem.createdBy === user?.uid){
+                                console.log("In", user?.uid);
                                 setChatThreadsValue((prev) => ({
                                     ...prev,
                                     threads: [threadItem, ...prev.threads],
-                                    // currentThreadId: threadItem.id,
-                                    // selectedThreadsArray: [...prev.selectedThreadsArray, threadItem.id] as string[]
+                                    currentThreadId: threadItem.id,
+                                    selectedThreadsArray: [...prev.selectedThreadsArray, threadItem.id] as string[]
                                 }));
                                 // navigatePage(`/scenes/chat/u=${user?.uid}=threadKey=${threadItem.id}`);
                             }
@@ -327,9 +329,7 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
         //     ...prev,
         //     currentSelectedThread: currentThreadObjectz[0] as ThreadRef,
         // }));
-        console.log(currentThreadObject)
     }
-
 
     // GET user data
     useEffect(() => {
