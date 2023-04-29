@@ -80,10 +80,10 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
                             if(threadItem.createdBy === user?.uid){
                                 setChatThreadsValue((prev) => ({
                                     ...prev,
-                                    threads: [threadItem, ...prev.threads],
+                                    threads: [threadItem, ...prev.threads.filter(item => item.id !== threadItem.id)],
                                     currentThreadId: threadItem.id,
                                     currentSelectedThread: threadItem as ThreadRef,
-                                    selectedThreadsArray: [...prev.selectedThreadsArray, threadItem.id] as string[]
+                                    selectedThreadsArray: [...prev.selectedThreadsArray.filter(item => item !== threadItem.id), threadItem.id] as string[]
                                 }));
                                 // navigatePage(`/scenes/chat/u=${user?.uid}=threadKey=${threadItem.id}`);
                             }
@@ -176,6 +176,43 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
                                 ),
                             }));
                         }
+                    }
+                });
+            });
+
+            return () => {
+                unsubscribe();
+                controller.abort();
+            }
+        } catch(error){
+            console.log("Error listenToUnseenMessages: ", error);
+        }
+    }
+    // LISTENS to new users
+    const listenToNewUsers = async() => {
+        const controller = new AbortController();
+        try{
+            const q = query(collection(firestore, "users"), orderBy("createdAt", "desc"), limit(1));
+            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                let user: any[] = [];
+                const source = querySnapshot.metadata.hasPendingWrites ? "Local" : "Server";
+                //START listening  to the query
+                querySnapshot.docChanges().forEach((change) => {
+                    user.push({id: change.doc.id, ...change.doc.data()});
+                });
+                user.forEach(userItem => {
+                    if(source == "Server" &&  user.length > 0 && dataFetchedOnSnapShotRef.current){
+                        const newUser: UsersInfo = {
+                            uid: userItem.id,
+                            firstName: userItem.firstName,
+                            lastName: userItem.lastName,
+                            email: userItem.email,
+                            userType: userItem.userType,
+                        };
+                        setUsersAtomValue((prev) => ({
+                            ...prev,
+                            users: [newUser, ...prev.users.filter(item => item.uid !== userItem.uid)]
+                        }));
                     }
                 });
             });
@@ -354,6 +391,7 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
             }));        
             listenToNewThread();
             listenToUnseenMessages();
+            listenToNewUsers();
             dataFetchedRef.current = true;
         } 
         if(currentThreadObject === undefined){

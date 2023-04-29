@@ -353,8 +353,8 @@ const NavBody:React.FC<NavBodyProps> = ({hex2rgb, theme, colors, tabVal, setTabT
                                                                         : thread.lastMessage
                                                                     : (thread.lastMessage === "blocked" || thread.lastMessage === "unblocked") 
                                                                         ? userBlocker[1] === user?.uid ? `You ${thread.lastMessage} ${kaChatInfo[0].firstName}.` : `${kaChatInfo[0].firstName} ${thread.lastMessage} you.`
-                                                                        : thread.lastMessage
-                                                                    } 
+                                                                        : thread.changeType === "added" ? `${thread.lastMessage} ${name}` :  thread.lastMessage
+                                                            } 
                                                         </Typography>
                                                     </Box>
                                                 }

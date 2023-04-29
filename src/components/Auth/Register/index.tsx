@@ -127,7 +127,7 @@ const Register:React.FC<RegisterProps> = ({ setIsAuth, setIsAccessingFirestore }
             createdAt: serverTimestamp() as Timestamp,
         }
         try{
-            await setDoc(doc(firestore, "users", user.uid), JSON.parse(JSON.stringify(firestoreUserSnippet)));
+            await setDoc(doc(firestore, "users", user.uid), firestoreUserSnippet);
             // console.log("User Successfully Created", user.uid);
             setIsAccessingFirestore(false);
             setIsAuth("login");
