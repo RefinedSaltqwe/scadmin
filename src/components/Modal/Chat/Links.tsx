@@ -172,7 +172,7 @@ const Links:React.FC<LinksProps> = () => {
                 transaction.set(doc(firestore, `threads/${threadId1}/messages`, "_dummy"), dummyMessage);
 
                 navigatePage(`/scenes/chat/u=${user?.uid}=threadKey=${threadId1}`);
-                
+
                 setOpen(false);
                 resetList();
             });

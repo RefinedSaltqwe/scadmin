@@ -75,7 +75,7 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
                 // PREVENTS the listener from executing twice when the createdAt changes from null to Timestamp
                 // Server when timestamp is changed
                 thread.forEach(threadItem => {
-                    console.log(source, threadItem, threadItem.id)
+                    console.log(source, thread.length, threadItem, threadItem.id, dataFetchedOnSnapShotRef.current)
                     if(source == "Server" &&  thread.length > 0 && dataFetchedOnSnapShotRef.current){
                         if(threadItem.changeType === "added"){
                             if(threadItem.createdBy === user?.uid){
@@ -84,6 +84,7 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
                                     ...prev,
                                     threads: [threadItem, ...prev.threads],
                                     currentThreadId: threadItem.id,
+                                    currentSelectedThread: threadItem as ThreadRef,
                                     selectedThreadsArray: [...prev.selectedThreadsArray, threadItem.id] as string[]
                                 }));
                                 // navigatePage(`/scenes/chat/u=${user?.uid}=threadKey=${threadItem.id}`);
@@ -356,6 +357,9 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
             listenToNewThread();
             listenToUnseenMessages();
             dataFetchedRef.current = true;
+            if(currentThreadObject === undefined){
+                dataFetchedOnSnapShotRef.current = true;
+            }
         } 
         return () => {
             controller.abort();
@@ -433,20 +437,20 @@ export async function getServerSideProps(context: GetServerSidePropsContext){
                     await updateDoc(updateUserRef, {
                         currentThread: threadId,
                     });
-                        return {
-                            props: {
-                                currentThread: threadId,
-                                myUID: uid,
-                                sortedThreads: JSON.parse(safeJsonStringify(sortedThreads)),
-                                allUsers: JSON.parse(safeJsonStringify(allUsers)),
-                                currentThreadObject: JSON.parse(safeJsonStringify(currentThreadObject[0])),
-                            },
-                        };
+                    return {
+                        props: {
+                            currentThread: threadId,
+                            myUID: uid,
+                            sortedThreads: JSON.parse(safeJsonStringify(sortedThreads)),
+                            allUsers: JSON.parse(safeJsonStringify(allUsers)),
+                            currentThreadObject: JSON.parse(safeJsonStringify(currentThreadObject[0])),
+                        },
+                    };
                 } 
                 else {
                     return {
                         redirect: {
-                            destination: `/scenes/error/404`,
+                            destination: `/scenes/error/406`,
                             permanent: false,
                         },
                     };
@@ -476,7 +480,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext){
         console.log("getServerSideProps error - [threads.tsx]", error);
         return {
             redirect: {
-                destination: '/scenes/error/404',
+                destination: '/scenes/error/405',
                 permanent: false,
             },
         };
