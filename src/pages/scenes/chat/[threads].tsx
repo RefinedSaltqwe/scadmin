@@ -85,7 +85,6 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
                                     currentSelectedThread: threadItem as ThreadRef,
                                     selectedThreadsArray: [...prev.selectedThreadsArray.filter(item => item !== threadItem.id), threadItem.id] as string[]
                                 }));
-                                // navigatePage(`/scenes/chat/u=${user?.uid}=threadKey=${threadItem.id}`);
                             }
                             else {
                                 setChatThreadsValue((prev) => ({
@@ -96,8 +95,6 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
                         }
                         else if(threadItem.changeType === "modified"){
                             const messageId = threadItem.lastMessageId.split("=");
-                            const removedUID = messageId[3];
-                            const removedBy = messageId[0];
 
                             getNewMessage(threadItem.lastMessageId ? threadItem.lastMessageId : "_dummy", threadItem.id);
 
@@ -106,6 +103,8 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
                             }
 
                             if(threadItem.lastMessageId.includes(`removeUser`)){
+                                const removedUID = messageId[3];
+                                const removedBy = messageId[0];
                                 removeUserConnectionToThread(removedBy, removedUID, threadItem.id, threadItem.connections);
                                 if(removedUID === user?.uid){
                                     setChatThreadsValue((prev) => ({
@@ -263,14 +262,18 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
         try{
             const batch = writeBatch(firestore);
 
-            //UPDATE new connections in thread
-            batch.update(doc(firestore, `threads/${threadId}`), {
-                connections: currentConnections.filter(prevUid => prevUid !== uid) as [] // DELETE connection
-            });
+            if(currentConnections.length >= 2){
+                //UPDATE new connections in thread
+                batch.update(doc(firestore, `threads/${threadId}`), {
+                    connections: currentConnections.filter(prevUid => prevUid !== uid) as [] // DELETE connection
+                });
+            }
+
             //DELETE user threadSnippets
             batch.delete(doc(firestore, `users/${uid}/threadSnippits`, threadId));
 
             if(currentConnections.length < 2){
+                //DELETE thread when no user exist
                 batch.delete(doc(firestore, `threads`, threadId));
             }
 
@@ -279,7 +282,6 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
             //GET user info from database
             const docRef = doc(firestore, "users", myUID);
             const docSnap = await getDoc(docRef);
-
             if (docSnap.exists()) {
                 if(docSnap.data().currentThread === threadId){
                     if(removedBy !== uid){

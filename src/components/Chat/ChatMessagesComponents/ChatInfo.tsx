@@ -49,7 +49,7 @@ const ChatInfo:React.FC<ChatInfoProps> = ({ hex2rgb, threadType, getUserThreadIn
     const [openThreadInfoValue, setOpenThreadInfoValue] = useRecoilState(openThreadInfoState);
     const setModalChangeGroupNameOpen = useSetRecoilState(modalChangeGroupNameState);
     const setModalChangeGroupPhotoOpen = useSetRecoilState(modalChangeGroupPhotoState);
-    const { isMobile, isTablet } = useMediaQueryHook();
+    const { isMobile } = useMediaQueryHook();
     const [openMembers, setOpenMembers] = React.useState(false);
     const [UID, setUID] = useState("");
     const [confirm, setConfirm] = useState(false);
@@ -100,7 +100,6 @@ const ChatInfo:React.FC<ChatInfoProps> = ({ hex2rgb, threadType, getUserThreadIn
                 if(!threadDoc.exists()){
                     throw new Error(`Sorry, thread doesn't exist.`);
                 }
-                const currentConnections = threadDoc.data().connections as [];
 
                 const message: ThreadMessage = {
                     threadId: threadDoc.id,
@@ -142,11 +141,6 @@ const ChatInfo:React.FC<ChatInfoProps> = ({ hex2rgb, threadType, getUserThreadIn
                 }
                 // UPDATE latest updates
                 transaction.update(doc(firestore, `threads`, threadDoc.id), threadUpdater);
-                if(currentConnections.length < 2){
-                    //DELETE thread when no user exist
-                    // transaction.delete(doc(firestore, `threads`, threadDoc.id));
-                }
-                
             });
         } catch (error){
             console.log("Remove User Error: ", error)
