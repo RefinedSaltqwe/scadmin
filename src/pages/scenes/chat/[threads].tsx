@@ -1,4 +1,4 @@
-import { chatThreadsState, ThreadMessage, ThreadRef } from '@/atoms/chatAtoms';
+import { chatThreadsState, defaultThreadRef, ThreadMessage, ThreadRef } from '@/atoms/chatAtoms';
 import { chatNavToggleState } from '@/atoms/chatNavToggleAtom';
 import { messageDataState } from '@/atoms/messageData';
 import { threadMessageState } from '@/atoms/threadMessageAtom';
@@ -10,7 +10,7 @@ import { auth, firestore } from '@/firebase/clientApp';
 import useNavigation from '@/hooks/useNavigation';
 import useRgbConverter from '@/hooks/useRgbConverter';
 import { tokens } from '@/mui/theme';
-import { Box, Typography, useTheme } from '@mui/material';
+import { Typography, useTheme } from '@mui/material';
 import { collection, doc, getDoc, getDocs, limit, onSnapshot, orderBy, query, serverTimestamp, Timestamp, updateDoc, where, writeBatch } from 'firebase/firestore';
 import { GetServerSidePropsContext } from 'next';
 import dynamic from 'next/dynamic';
@@ -97,6 +97,7 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
                         else if(threadItem.changeType === "modified"){
                             const messageId = threadItem.lastMessageId.split("=");
                             const removedUID = messageId[3];
+                            const removedBy = messageId[0];
 
                             getNewMessage(threadItem.lastMessageId ? threadItem.lastMessageId : "_dummy", threadItem.id);
 
@@ -105,7 +106,7 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
                             }
 
                             if(threadItem.lastMessageId.includes(`removeUser`)){
-                                removeUserConnectionToThread(removedUID, threadItem.id, threadItem.connections);
+                                removeUserConnectionToThread(removedBy, removedUID, threadItem.id, threadItem.connections);
                                 if(removedUID === user?.uid){
                                     setChatThreadsValue((prev) => ({
                                         ...prev,
@@ -258,7 +259,7 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
         }
     }
 
-    const removeUserConnectionToThread = async(uid: string, threadId: string, currentConnections: string []) => {
+    const removeUserConnectionToThread = async(removedBy: string, uid: string, threadId: string, currentConnections: string []) => {
         try{
             const batch = writeBatch(firestore);
 
@@ -281,7 +282,9 @@ const Chat:React.FC<ChatProps> = ({ currentThread , myUID, sortedThreads, allUse
 
             if (docSnap.exists()) {
                 if(docSnap.data().currentThread === threadId){
-                    getUpdatedThread(threadId);
+                    if(removedBy !== uid){
+                        getUpdatedThread(threadId);
+                    }
                     if(uid === user?.uid){
                         setChatNavToggleValue(true);
                         setChatThreadsValue((prev) => ({

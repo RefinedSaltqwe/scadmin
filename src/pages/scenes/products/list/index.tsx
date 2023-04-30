@@ -167,7 +167,7 @@ const ProductsList:React.FC<ProductsListProps> = () => {
                     <Header title="Products"/>
                 </Box>
                 <Box sx={{flexGrow: 0, height: "inherit"}}>  
-                    <ScapPrimaryButton onClick={()=>{navigatePage(`orders/createorder`)}} color="primary" variant="contained" sx={{padding: "5px 13px 5px 13px"}} >
+                    <ScapPrimaryButton onClick={()=>{}} color="primary" variant="contained" sx={{padding: "5px 13px 5px 13px"}} >
                         Add Product
                     </ScapPrimaryButton>
                 </Box>
