@@ -30,8 +30,8 @@ const ChangeGroupPhoto:React.FC<ChangeGroupPhotoProps> = () => {
     const usersAtomValue = useRecoilValue(usersAtomState)
     const [buttonDisabled, setButtonDisabled] = useState(true);
     const [imgIsUploading, setImgIsUploading] = useState(false);
-    const [selectedImageBlob, setSelectedImageBlob] = useState<Blob>();
-    const [selectedImageBase64, setSelectedImageBase64] = useState<string>();
+    const [selectedImageBlob, setSelectedImageBlob] = useState<Blob | Blob []>();
+    const [selectedImageBase64, setSelectedImageBase64] = useState<string | string []>();
     const [resizedImage, setResizedImage] = useState<string>();
     const imgRef = useRef<null | HTMLElement>(null);
 
@@ -79,7 +79,7 @@ const ChangeGroupPhoto:React.FC<ChangeGroupPhotoProps> = () => {
 
     const imgLoaded = () => {
         if(selectedImageBlob){
-            BlobToBase64(selectedImageBlob!);
+            BlobToBase64(selectedImageBlob! as Blob);
         }
     }
 
@@ -152,14 +152,14 @@ const ChangeGroupPhoto:React.FC<ChangeGroupPhotoProps> = () => {
                                         </Box>
                                     ):(
                                         <>
-                                            {selectedImageBlob ? (
+                                            {selectedImageBlob as Blob ? (
                                                 <Box sx={{width: "100%", alignItems:"center", display: "flex", justifyContent: "center", flexDirection: "column"}}>
                                                     <Box
                                                         ref={imgRef}
                                                         component="img"
                                                         alt="Loading..."
-                                                        src={selectedImageBase64}
-                                                        srcSet={selectedImageBase64} 
+                                                        src={selectedImageBase64 as string}
+                                                        srcSet={selectedImageBase64 as string} 
                                                         loading="lazy" 
                                                         onLoad={() => {imgLoaded()}}
                                                         sx={{
@@ -170,7 +170,7 @@ const ChangeGroupPhoto:React.FC<ChangeGroupPhotoProps> = () => {
                                                     />
                                                 </Box>
                                             ):(
-                                                <Dropzone multipleFiles={false} setSelectedImageBlob={setSelectedImageBlob} setSelectedImageBase64={setSelectedImageBase64} />
+                                                <Dropzone size="10%" multipleFiles={false} setSelectedImageBlob={setSelectedImageBlob} setSelectedImageBase64={setSelectedImageBase64} />
                                             )}
                                         </>
                                     )}
