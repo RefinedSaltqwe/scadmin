@@ -270,7 +270,7 @@ const ProductDetails:React.FC<ProductDetailsProps> = () => {
                                             <FlexBetween sx={{ width: "100%", marginY: "8px", justifyContent: "center"}}>
                                                 {/* Image List */}
                                                 {selectedImageBase64.length > 0 &&
-                                                    <ImageListItems selectedImageBase64={selectedImageBase64 as string []} setSelectedImageBase64={setSelectedImageBase64 as React.Dispatch<React.SetStateAction<string[]>>}/>
+                                                    <ImageListItems selectedImagesBase64={selectedImageBase64 as string []} setSelectedImagesBase64={setSelectedImageBase64 as React.Dispatch<React.SetStateAction<string[]>>}/>
                                                 }
                                                 {/* ADD IMAGE */}
                                                 <Box sx={{width: isMobile ? "21%" : "30%", pb: isMobile ? "21%" : "30%", position: "relative", borderRadius: "12px", m: isMobile ? "15px" : "10px", cursor: "pointer"}}>

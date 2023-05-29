@@ -50,7 +50,7 @@ const ImagePreview:React.FC<ImagePreviewProps> = ({selectedImage, setSelectedIma
                             </ScapAvatar>
                         </ListItemAvatar>
                     </ListItem>
-                    <ImageListItems src={selectedImage as string} setSelectedImage={setSelectedImage} setSendButoon={setSendButoon} />
+                    <ImageListItems selectedImageBase64={selectedImage as string} setSelectedImageBase64={setSelectedImage} setSendButoon={setSendButoon} />
                 </List>
             </Box>
             
