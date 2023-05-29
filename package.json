@@ -38,6 +38,8 @@
     "react-dropzone": "^14.2.3",
     "react-firebase-hooks": "^5.1.1",
     "react-image-file-resizer": "^0.4.8",
+    "react-imask": "^6.6.1",
+    "react-number-format": "^5.1.4",
     "react-quill": "^2.0.0",
     "recoil": "^0.7.6",
     "recoil-persist": "^4.2.0",

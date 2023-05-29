@@ -7,12 +7,11 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { AppProps } from 'next/app';
-import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import NextNProgress from 'nextjs-progressbar';
 import { RecoilEnv, RecoilRoot } from 'recoil';
 import "../styles/globals.css";
-import NextNProgress from 'nextjs-progressbar';
 
 // * Analytics
 if(typeof window !== 'undefined'){

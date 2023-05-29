@@ -369,19 +369,26 @@ const ScapPrimaryTextField:React.FC<ScapPrimaryTextFieldProps> = ({
                                         endAdornment: (
                                             <InputAdornment position="end">
                                                 {AdormentButtonDisable ? (
-                                                    <Add sx={{fontSize: 20, color: theme.palette.text.secondary}}/>
+                                                    <Add sx={{fontSize: 20, color: theme.palette.text.secondary, mr: "5px"}}/>
                                                 ):(
                                                     <Tooltip title="Add email">
                                                         <IconButton
-                                                            size="large"
+                                                            size="small"
                                                             aria-label="show 17 new notifications"
                                                             color="inherit"
                                                             edge="end"
-                                                            sx={{borderRadius: "12%"}}
+                                                            sx={{
+                                                                borderRadius: "8px",
+                                                                mr: "0px",
+                                                                backgroundColor: theme.palette.secondary.main,
+                                                                "&:hover": {
+                                                                    backgroundColor: theme.palette.secondary.main,
+                                                                }
+                                                            }}
                                                             onClick={onAdormentButtonClick}
                                                         >
-                                                             {/* <Add  sx={{fontSize: 20, color: theme.palette.secondary.main}}/> */}
-                                                             <Typography variant='h6' sx={{fontWeight: 600, color: theme.palette.secondary.main}}>ADD</Typography>
+                                                             <Add  sx={{fontSize: 20, color: theme.palette.primary.contrastText}}/>
+                                                             {/* <Typography variant='h6' sx={{fontWeight: 600, color: theme.palette.secondary.main}}>ADD</Typography> */}
                                                         </IconButton>
                                                     </Tooltip>
                                                 )}

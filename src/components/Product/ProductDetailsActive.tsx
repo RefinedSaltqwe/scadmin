@@ -17,7 +17,7 @@ const ProductDetailsActive:React.FC<ProductDetailsActiveProps> = () => {
 
     
     return (
-        <ListItem>
+        <ListItem sx={{p: 0}} >
             <FormControl 
                 sx={{ 
                     m: "10px 0 10px 0",

@@ -231,7 +231,7 @@ const DrawerComponent:React.FC<DrawerComponentProps> = ({active, setActive, them
                         link = `/scenes/${lcText}`;
                     }
 
-                    if(lcText != "chat"){
+                    if(lcText !== "chat"){
                         link = link.replace(/\s+/g, '-').toLowerCase();
                     }
                     
@@ -266,13 +266,13 @@ const DrawerComponent:React.FC<DrawerComponentProps> = ({active, setActive, them
                                         padding: "4px 15px",
                                         borderRadius: 2,
                                         backgroundColor:
-                                            active.parent === lcText
+                                            (active.parent === lcText) || (active.parent === lcText.replace(/\s+/g, '-').toLowerCase())
                                             ? theme.palette.secondary.light 
                                             : "transparent",
                                         color:
-                                            active.parent === lcText
-                                            ? theme.palette.primary.contrastText
-                                            : theme.palette.secondary.contrastText,
+                                            (active.parent === lcText) || (active.parent === lcText.replace(/\s+/g, '-').toLowerCase())
+                                                ? theme.palette.primary.contrastText
+                                                : theme.palette.secondary.contrastText,
                                         '&:hover': {
                                             backgroundColor: theme.palette.secondary.light
                                         }
@@ -281,7 +281,7 @@ const DrawerComponent:React.FC<DrawerComponentProps> = ({active, setActive, them
                                     <ListItemIcon
                                         sx={{
                                             color:
-                                                active.parent === lcText
+                                                (active.parent === lcText) || (active.parent === lcText.replace(/\s+/g, '-').toLowerCase())
                                                     ? theme.palette.secondary.main
                                                     : theme.palette.secondary.contrastText,
                                         }}
@@ -304,45 +304,48 @@ const DrawerComponent:React.FC<DrawerComponentProps> = ({active, setActive, them
                             {childrenLength > 0 && 
                                 <Collapse in={expanded} timeout="auto" unmountOnExit>
                                     <List key={text} component="div" disablePadding >
-                                        {children.map((item: string, index) => (
-                                            <ListItemButton 
-                                                onClick={() => {
-                                                    {isMobile && setMobileOpen(false)}
-                                                    setActive({...active, parent: lcText, child: item.toLocaleLowerCase() + lcText});
-                                                    navigatePage(`/scenes/${lcText.replace(/\s+/g, '-').toLowerCase()}/${item.replace(/\s+/g, '-').toLocaleLowerCase()}`);
-                                                }}
-                                                key={index} 
-                                                sx={{ 
-                                                    pl: 4,
-                                                    marginTop: "4px",
-                                                    padding: "4px 15px",
-                                                    borderRadius: 2,
-                                                    color:
-                                                        active.parent === lcText
-                                                        ? theme.palette.primary.contrastText
-                                                        : theme.palette.secondary.contrastText,
-                                                    '&:hover': {
-                                                        backgroundColor: theme.palette.secondary.light
-                                                    }
-                                                }}
-                                            >
-                                                {active.child === item.toLocaleLowerCase() + lcText 
-                                                    ? <Circle sx={{marginRight: "-8px",fontSize: "8px", color: theme.palette.secondary.main}}/>
-                                                    : "" }
-                                                <ListItemText 
-                                                    primary={item}
-                                                    primaryTypographyProps={{fontSize: '13px'}} 
-                                                    sx={{
-                                                        ml: "38px",
-                                                        color:
-                                                            active.child === item.toLocaleLowerCase() + lcText
-                                                                ? theme.palette.primary.contrastText
-                                                                : theme.palette.secondary.contrastText,
-                                                        fontWeight: 100,
+                                        {children.map((item: string, index) => {
+                                            const menuOption = item.toLocaleLowerCase() + lcText;
+                                            return (
+                                                <ListItemButton 
+                                                    onClick={() => {
+                                                        {isMobile && setMobileOpen(false)}
+                                                        setActive({...active, parent: lcText, child: item.toLocaleLowerCase() + lcText});
+                                                        navigatePage(`/scenes/${lcText.replace(/\s+/g, '-').toLowerCase()}/${item.replace(/\s+/g, '-').toLocaleLowerCase()}`);
                                                     }}
-                                                />
-                                            </ListItemButton>
-                                        ))}
+                                                    key={index} 
+                                                    sx={{ 
+                                                        pl: 4,
+                                                        marginTop: "4px",
+                                                        padding: "4px 15px",
+                                                        borderRadius: 2,
+                                                        color:
+                                                            (active.parent === lcText) || (active.parent === lcText.replace(/\s+/g, '-').toLowerCase())
+                                                            ? theme.palette.primary.contrastText
+                                                            : theme.palette.secondary.contrastText,
+                                                        '&:hover': {
+                                                            backgroundColor: theme.palette.secondary.light
+                                                        }
+                                                    }}
+                                                >
+                                                    {(active.child ===  menuOption) || (active.child ===  menuOption.replace(/\s+/g, '-'))
+                                                        ? <Circle sx={{marginRight: "-8px",fontSize: "8px", color: theme.palette.secondary.main}}/>
+                                                        : "" }
+                                                    <ListItemText 
+                                                        primary={item}
+                                                        primaryTypographyProps={{fontSize: '13px'}} 
+                                                        sx={{
+                                                            ml: "38px",
+                                                            color:
+                                                            (active.child ===  menuOption) || (active.child ===  menuOption.replace(/\s+/g, '-'))
+                                                                    ? theme.palette.primary.contrastText
+                                                                    : theme.palette.secondary.contrastText,
+                                                            fontWeight: 100,
+                                                        }}
+                                                    />
+                                                </ListItemButton>
+                                            )
+                                        })}
                                     </List>
                                 </Collapse>
                             }

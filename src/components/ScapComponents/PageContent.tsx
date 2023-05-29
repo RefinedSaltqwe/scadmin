@@ -23,7 +23,7 @@ const PageContentLayout: React.FC<PageContentLayoutProps> = ({ children, leftWid
     const chatNavToggleValue = useRecoilValue(chatNavToggleState);
     const isSmallMediumMobile = useMediaQuery("(min-width:450px)");
     const menuStateValue = useRecoilValue(myMenuState);
-    const [isShow, setIsShow] = useState(false)
+    const [isShow, setIsShow] = useState(false);
     const { hex2rgb } = useRgbConverter();
     let pageHeight="";
     const pageName = menuStateValue.pageName;
@@ -138,7 +138,7 @@ const PageContentLayout: React.FC<PageContentLayoutProps> = ({ children, leftWid
                         {/* Left Content */}
                         <FlexBetween
                             sx={{
-                                width: isMobile ? leftWidth : "99vw",
+                                width: isMobile ? leftWidth : "100%",
                                 padding: pageType === "auth" ? isTablet ? "64px" : "30px" : "0",
                                 backgroundColor: "none",
                                 alignItems: pageType === "auth" ? "center" : "flex-start"
@@ -150,7 +150,7 @@ const PageContentLayout: React.FC<PageContentLayoutProps> = ({ children, leftWid
                         <FlexBetween
                             sx={{
                                 flexGrow: 1,
-                                width: isMobile ? rightWidth : "98vw",
+                                width: isMobile ? rightWidth : "100%",
                                 padding: pageType === "auth" ? isMobile ? "64px" : "30px" : "0",
                                 backgroundImage: pageType === "auth" ? "url(/assets/img/gradient-bg.svg)" : "none",
                                 backgroundPosition: "center top",

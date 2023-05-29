@@ -14,7 +14,7 @@ function MyApp(snackbarValue: SnackbarState) {
           {/* <Button sx={{color: theme.palette.text.primary}} onClick={() => { alert(`I belong to snackbar with id ${snackbarId}`); }}>
             Undo
           </Button> */}
-          <Button sx={{color: theme.palette.text.primary}} onClick={() => { closeSnackbar(snackbarId) }}>
+          <Button sx={{color: theme.palette.primary.contrastText}} onClick={() => { closeSnackbar(snackbarId) }}>
             Dismiss
           </Button>
         </>
@@ -48,7 +48,7 @@ const ScapSnackbar:React.FC = () => {
         <SnackbarProvider 
             preventDuplicate
             maxSnack={3} 
-            autoHideDuration={5000} 
+            autoHideDuration={4000} 
             anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'right'

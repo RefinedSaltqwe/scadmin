@@ -170,7 +170,7 @@ const ChangeGroupPhoto:React.FC<ChangeGroupPhotoProps> = () => {
                                                     />
                                                 </Box>
                                             ):(
-                                                <Dropzone setSelectedImageBlob={setSelectedImageBlob} setSelectedImageBase64={setSelectedImageBase64} />
+                                                <Dropzone multipleFiles={false} setSelectedImageBlob={setSelectedImageBlob} setSelectedImageBase64={setSelectedImageBase64} />
                                             )}
                                         </>
                                     )}

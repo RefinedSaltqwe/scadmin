@@ -6,7 +6,6 @@ import ProductTypeInput from '@/components/Product/ProductOrganization/ProductTy
 import ProductVendorInput from '@/components/Product/ProductOrganization/ProductVendorInput';
 import TagsInput from '@/components/Product/ProductOrganization/TagsInput';
 import ProductVariant from '@/components/Product/ProductVariant';
-import AlertInfo from '@/components/ScapComponents/AlertInfo';
 import Dropzone from '@/components/ScapComponents/Dropzone';
 import FlexBetween from '@/components/ScapComponents/FlexBetween';
 import FlexContainer from '@/components/ScapComponents/FlexContainer';
@@ -20,11 +19,11 @@ import useNavigation from '@/hooks/useNavigation';
 import useRgbConverter from '@/hooks/useRgbConverter';
 import { AddPhotoAlternateOutlined, ArrowBackIosOutlined, HelpOutline } from '@mui/icons-material';
 import { Box, Checkbox, Divider, FormControl, FormControlLabel, FormGroup, IconButton, InputAdornment, List, MenuItem, Radio, RadioGroup, Select, Stack, TextField, Tooltip, Typography, useTheme } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { IMaskInput } from 'react-imask';
 import { NumericFormat, NumericFormatProps } from 'react-number-format';
 
-type ProductDetailsProps = {
+type CreateProductProps = {
     
 };
 
@@ -82,14 +81,14 @@ interface WeightState {
     shippingType: string;
 }
 
-const ProductDetails:React.FC<ProductDetailsProps> = () => {
+const CreateProduct:React.FC<CreateProductProps> = () => {
 
     const theme = useTheme();
     const { isMobile } = useMediaQueryHook();
     const { hex2rgb } = useRgbConverter();
     const { navigatePage } = useNavigation();
-    const [selectedImageBlob, setSelectedImageBlob] = useState<Blob | Blob[]>();
-    const [selectedImageBase64, setSelectedImageBase64] = useState<string | string[] | undefined>([]);
+    const [selectedImageBlob, setSelectedImageBlob] = useState<Blob>();
+    const [selectedImageBase64, setSelectedImageBase64] = useState<string>();
     const [errorMessage, setErrorMessage] = useState("");
     const [shippingInfo, setShippingInfo] = useState<WeightState>({
         shippingWeight: '',
@@ -131,7 +130,7 @@ const ProductDetails:React.FC<ProductDetailsProps> = () => {
                                     <ArrowBackIosOutlined sx={{fontSize: 18, color: theme.palette.text.secondary}}/>
                                 </IconButton>
                             </Box>
-                            <Header title="Product Name" subtitle="December 2, 2022 at 12:21 am" />
+                            <Header title="Add Product" />
                         </Box>
                     </FlexBetween> 
                     {/* BODY */}
@@ -260,32 +259,26 @@ const ProductDetails:React.FC<ProductDetailsProps> = () => {
                                     </FlexContainer>
                                     {/* Media */}
                                     <FlexContainer>
-                                        <Box sx={{width: "100%", display:"flex", flexDirection: "row", mb: "24px"}}>
+                                        <Box sx={{width: "100%", display:"flex", flexDirection: "row"}}>
                                             <Box sx={{flexGrow: 1, display: "flex", alignItems: "center"}}>
                                                 <Typography variant="h5" sx={{fontWeight: 600}}>Media</Typography>
                                             </Box>
                                         </Box>
-                                        <AlertInfo text="Drag 'n' drop images, or click to select images. Up to 10 images at a time." />
-                                        {selectedImageBase64 && selectedImageBase64.length > 0 ? (
-                                            <FlexBetween sx={{ width: "100%", marginY: "8px", justifyContent: "center"}}>
+                                        {selectedImageBase64 ? (
+                                            <FlexBetween sx={{ width: "100%", marginY: "8px"}}>
                                                 {/* Image List */}
-                                                {selectedImageBase64.length > 0 &&
-                                                    <ImageListItems selectedImageBase64={selectedImageBase64 as string []} setSelectedImageBase64={setSelectedImageBase64 as React.Dispatch<React.SetStateAction<string[]>>}/>
-                                                }
+                                                <ImageListItems src={selectedImageBase64 as string} setSelectedImage={setSelectedImageBase64}/>
                                                 {/* ADD IMAGE */}
-                                                <Box sx={{width: isMobile ? "21%" : "30%", pb: isMobile ? "21%" : "30%", position: "relative", borderRadius: "12px", m: isMobile ? "15px" : "10px", cursor: "pointer"}}>
+                                                <Box sx={{width: "25%", pb: "25%", position: "relative", borderRadius: "12px", m: "15px", cursor: "pointer"}} onClick={() => {console.log("Click")}} >
                                                     <Box sx={{position: "absolute", height: "100%", width: "100%"}}>
-                                                        {/* <FlexBetween sx={{height: "100%", width: "100%", justifyContent: "center", borderWidth: "2px", borderRadius: "12px", borderColor: hex2rgb(theme.palette.primary.light, "80").rgb, borderStyle: "dashed"}}>
+                                                        <FlexBetween sx={{height: "100%", width: "100%", justifyContent: "center", borderWidth: "2px", borderRadius: "12px", borderColor: hex2rgb(theme.palette.primary.light, "80").rgb, borderStyle: "dashed"}}>
                                                             <AddPhotoAlternateOutlined sx={{width: "25%", height: "25%", color: hex2rgb(theme.palette.primary.light, "80").rgb}} />
-                                                        </FlexBetween> */}
-                                                        <Dropzone size="50%" multipleFiles={true} setSelectedImageBlob={setSelectedImageBlob} setSelectedImageBase64={setSelectedImageBase64} />
+                                                        </FlexBetween>
                                                     </Box>
                                                 </Box>
-                                            </FlexBetween> 
-                                        ):(
-                                            <FlexBetween sx={{ width: "100%", mt: "24px", mb: "8px", justifyContent: "center", height: "100%"}}>
-                                                <Dropzone size="12%" multipleFiles={true} setSelectedImageBlob={setSelectedImageBlob} setSelectedImageBase64={setSelectedImageBase64} />
                                             </FlexBetween>
+                                        ):(
+                                            <Dropzone multipleFiles={true} setSelectedImageBlob={setSelectedImageBlob} setSelectedImageBase64={setSelectedImageBase64} />
                                         )}
                                     </FlexContainer>
                                     {/* Pricing */}
@@ -595,7 +588,7 @@ const ProductDetails:React.FC<ProductDetailsProps> = () => {
         </>
     )
 }
-export default ProductDetails;
+export default CreateProduct;
 
 const options100 = [
     { title: 'The Shawshank Redemption', year: 1994 },

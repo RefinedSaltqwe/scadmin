@@ -1,20 +1,21 @@
 import { snackbarState } from '@/atoms/snackbarAtoms';
 import useRgbConverter from '@/hooks/useRgbConverter';
-import { Box, useTheme, Typography } from '@mui/material';
-import { blue, green, red } from '@mui/material/colors';
+import { AddPhotoAlternateOutlined } from '@mui/icons-material';
+import { Box, useTheme } from '@mui/material';
+import { green, red } from '@mui/material/colors';
 import React, { useCallback, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useSetRecoilState } from 'recoil';
-import Resizer from "react-image-file-resizer";
-import { ImageOutlined } from '@mui/icons-material';
 
 type DropzoneProps = {
+  size: string;
   // setSelectedImage: (value: React.SetStateAction<string | undefined>) => void;
-  setSelectedImageBlob: React.Dispatch<React.SetStateAction<Blob | undefined>>;
-  setSelectedImageBase64: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setSelectedImageBlob: React.Dispatch<React.SetStateAction<Blob | Blob[] | undefined>>;
+  setSelectedImageBase64: React.Dispatch<React.SetStateAction<string | string [] | undefined>>;
+  multipleFiles: boolean;
 };
 
-const Dropzone:React.FC<DropzoneProps> = ({setSelectedImageBlob, setSelectedImageBase64}) => {
+const Dropzone:React.FC<DropzoneProps> = ({size, setSelectedImageBlob, setSelectedImageBase64, multipleFiles}) => {
   
   const theme = useTheme();
   const { hex2rgb } = useRgbConverter();
@@ -50,6 +51,7 @@ const Dropzone:React.FC<DropzoneProps> = ({setSelectedImageBlob, setSelectedImag
   };
 
 const onDrop = useCallback(async(acceptedFiles: any) => {
+  let imagesBlob: Blob [] = [];
   acceptedFiles.forEach( async (file: Blob) => {
     const reader = new FileReader();
     // const readerReview = new FileReader();
@@ -59,10 +61,19 @@ const onDrop = useCallback(async(acceptedFiles: any) => {
     reader.onabort = () => setSnackbarValue({ open: true, type: "error", text: `File reading was aborted.` });
     reader.onerror = () => setSnackbarValue({ open: true, type: "error", text: `File reading has failed.` });
     reader.onload = (readerEvent) => {
-      setSelectedImageBase64(readerEvent.target?.result as string);
-      setSelectedImageBlob(file);
+      if(multipleFiles){
+        setSelectedImageBase64(prev => [...prev as string [], readerEvent.target?.result as string ]);
+        imagesBlob.push(file)
+      } else {
+        setSelectedImageBase64(readerEvent.target?.result as string);
+        setSelectedImageBlob(file);
+      }
     }
   })
+  
+  if(multipleFiles){
+    setSelectedImageBlob(imagesBlob);
+  }
    // eslint-disable-next-line react-hooks/exhaustive-deps
 }, []);
 
@@ -72,7 +83,7 @@ const {
     isFocused,
     isDragAccept,
     isDragReject
-} = useDropzone({onDrop, multiple: false, accept: {'image/*': []}, maxFiles:1});
+} = useDropzone({onDrop, multiple: multipleFiles, accept: {'image/*': []}, maxFiles: 10});
 
     
 const style = useMemo(() => ({
@@ -90,15 +101,15 @@ const style = useMemo(() => ({
   return (
     <Box
         borderRadius="5px"
-        mt="1rem"
-        p="1rem"
-        sx={{width: "100%", cursor: "pointer"}}
+        // mt="9px"
+        // p="1rem"
+        sx={{width: "100%", cursor: "pointer", height: "100%"}}
     >
-        <Box className="container" sx={{width: "100%"}}>
-            <Box {...getRootProps({style})} sx={{borderRadius: "12px !important", display: "flex", justifyContent: "center"}}>
+        <Box className="container" sx={{width: "100%", height: "100%"}}>
+            <Box {...getRootProps({style})} sx={{borderRadius: "12px !important", display: "flex", justifyContent: "center", height: "100% !important"}}>
                 <input {...getInputProps()} />
-                <ImageOutlined sx={{height: "30px", width: "30px", color: theme.palette.text.secondary, mr: "10px"}} />
-                <Typography variant="h6" sx={{color: theme.palette.text.secondary, fontWeight: 500}}>{`Drag 'n' drop an image here, or click to select image`}</Typography>
+                <AddPhotoAlternateOutlined sx={{height: size, width: size, color: hex2rgb(theme.palette.primary.light, "70").rgb, m: "24px"}} />
+                {/* <Typography variant="h6" sx={{color: theme.palette.text.secondary, fontWeight: 500}}>{`Drag 'n' drop an image here, or click to select image`}</Typography> */}
             </Box>
         </Box>
     </Box>

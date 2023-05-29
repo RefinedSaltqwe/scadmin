@@ -37,17 +37,18 @@ const CreateOrder:React.FC<CreateOrderProps> = () => {
                 <BrowseProduct setOpen={setOpenBrowseProduct}  open={openBrowseProduct} />
                 <BrowseCustomer setOpen={setOpenBrowseCustomer} open={openBrowseCustomer} />
                 {/* HEADER */}
-                <FlexBetween sx={{flexDirection: "row", width: "inherit", flexGrow: 0, mb: 3}}>
-                    <Box sx={{flexGrow: 1}}>  
-                        <IconButton 
-                            size="large" 
-                            aria-label="Back" 
-                            color="inherit" 
-                            sx={{}}
-                            onClick={() => {navigatePage("/scenes/orders")}}
-                        >
-                            <ArrowBackIosOutlined sx={{fontSize: 18, color: theme.palette.text.secondary}}/>
-                        </IconButton>
+                <FlexBetween sx={{flexDirection: "row", width: "inherit", flexGrow: 0}}>
+                <Box sx={{flexGrow: 1, display: "flex", flexDirection: "row"}}>  
+                        <Box sx={{mr: 2}} >
+                            <IconButton 
+                                size="large" 
+                                aria-label="Back" 
+                                color="inherit" 
+                                onClick={() => {navigatePage("/scenes/orders")}}
+                            >
+                                <ArrowBackIosOutlined sx={{fontSize: 18, color: theme.palette.text.secondary}}/>
+                            </IconButton>
+                        </Box>
                         <Header title="Create Order"/>
                     </Box>
                 </FlexBetween>
@@ -55,12 +56,12 @@ const CreateOrder:React.FC<CreateOrderProps> = () => {
                 <Box sx={{m: isMobile ? "25px 0 0 0" : "5px 0 0 0 ", width: "100%"}}>
                     <PageContentLayout leftWidth="60%" rightWidth="40%" pageType="noHeight">
                         {/* LEFT */}
-                        <FlexBetween sx={{width: "100%", mr: isMobile ? 3 : 0}} >
+                        <FlexBetween sx={{width: "100%", pr: isMobile ? 3 : 0}} >
                             <FlexContainer>
                                 {/* HEADER */}
                                 <FlexBetween>
                                     <Box sx={{width: "100%", display:"flex", flexDirection: "row"}}>
-                                        <Box sx={{flexGrow: 1, display: "flex", alignItems: "center", width: "30px"}}>
+                                        <Box sx={{flexGrow: 1, display: "flex", alignItems: "center"}}>
                                             <Typography variant="h5" sx={{fontWeight: 600}}>Products</Typography>
                                         </Box>
                                     </Box>

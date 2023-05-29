@@ -230,7 +230,7 @@ const ChatInfo:React.FC<ChatInfoProps> = ({ hex2rgb, threadType, getUserThreadIn
                     {threadType === "private" && 
                         <List sx={{width: "100%", pr: "5px"}}>
                             <ListItem disablePadding>
-                                <ListItemButton sx={{borderRadius: "8px 8px"}} onClick={()=>{changeChatStatus("muted")}}>
+                                <ListItemButton sx={{borderRadius: "8px 8px"}} onClick={()=>{}}>
                                     <ListItemIcon>
                                         <NotificationsOffOutlined />
                                     </ListItemIcon>

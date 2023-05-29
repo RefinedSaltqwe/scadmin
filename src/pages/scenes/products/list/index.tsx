@@ -1,13 +1,15 @@
 import FlexBetween from '@/components/ScapComponents/FlexBetween';
+import FlexContainer from '@/components/ScapComponents/FlexContainer';
 import Header from '@/components/ScapComponents/Header';
 import ScapPrimaryButton from '@/components/ScapComponents/PrimaryButton';
+import ScapSecondaryButton from '@/components/ScapComponents/SecondaryButton';
 import { auth } from '@/firebase/clientApp';
 import useNavigation from '@/hooks/useNavigation';
 import useRgbConverter from '@/hooks/useRgbConverter';
 import { tokens } from '@/mui/theme';
 import { Avatar, Box, Chip, List, ListItem, ListItemAvatar, ListItemText, Tooltip, Typography, useTheme } from '@mui/material';
 import { green, red } from '@mui/material/colors';
-import { DataGrid, GridEventListener, GridRowSelectionModel, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridRowSelectionModel, GridToolbar } from "@mui/x-data-grid";
 import Image from 'next/image';
 import React, { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -130,6 +132,8 @@ const ProductsList:React.FC<ProductsListProps> = () => {
     const { navigatePage } = useNavigation();
     const [rowSelectionModel, setRowSelectionModel] = useState<GridRowSelectionModel>([]);
 
+    console.log(rowSelectionModel)
+
     const onEdit = React.useCallback((val: string) => {
         console.log("edit: ", val);
     }, []);
@@ -156,116 +160,125 @@ const ProductsList:React.FC<ProductsListProps> = () => {
         });
     }, [onEdit, onDelete, navigatePage, rows.length]);
 
-    console.log(rowSelectionModel)
+    const handleDeleteRow = (rowIds: GridRowSelectionModel) => {
+        console.log(rowIds)
+    }
     
     return (
         <FlexBetween sx={{width: "100%", height:"90%", justifyContent: "center"}} >
-        <FlexBetween mb="20px" sx={{width: "100%", height:"100%", alignItems: "flex-start", maxWidth: "1440px"}}>
-            {/* HEADER */}
-            <FlexBetween sx={{flexDirection: "row", width: "inherit", flexGrow: 0}}>
-                <Box sx={{flexGrow: 1}}>  
-                    <Header title="Products"/>
-                </Box>
-                <Box sx={{flexGrow: 0, height: "inherit"}}>  
-                    <ScapPrimaryButton onClick={()=>{}} color="primary" variant="contained" sx={{padding: "5px 13px 5px 13px"}} >
-                        Add Product
-                    </ScapPrimaryButton>
-                </Box>
-            </FlexBetween>
-            {/* BODY */}
-            <FlexBetween m="25px 0 0 0" sx={{width: "100%", height: "100%", flexDirection: "column", flexGrow: 1}}>
-                <Box
-                    sx={{
-                        flexGrow: 1,
-                        width: "inherit",
-                        "& .MuiDataGrid-root": {
-                        border: "none",
-                        },
-                        "& .MuiDataGrid-cell": {
-                            borderTop:  'none',
-                            borderBottom: `1px ${hex2rgb(theme.palette.primary.light, "50").rgb} solid !important`,
-                            fontSize: "13px",
-                            cursor:"pointer"
-                        },
-                        "& .name-column--cell": {
-                            color: colors.greenAccent[700],
-                        },
-                        "& .MuiDataGrid-columnHeaders": {
-                            backgroundColor: theme.palette.mode === "dark" ? theme.palette.primary.dark : hex2rgb(theme.palette.primary.light, "60").rgb,
-                            borderColor: hex2rgb(theme.palette.primary.light, "50").rgb,
-                            borderBottom: "none",
-                            fontWeight: 900,
-                            textTransform: "uppercase",
-                        },
-                        "& .MuiDataGrid-virtualScroller": {
-                            backgroundColor: theme.palette.background.default,
-                        },
-                        "& .MuiDataGrid-row.Mui-selected": {
-                            backgroundColor: hex2rgb(theme.palette.primary.light, "10").rgb,
-                        },
-                        "& .MuiDataGrid-footerContainer": {
-                            borderTop:  `none`,
-                            borderBottom: "none",
-                            backgroundColor: theme.palette.primary.main,
-                        },
-                        "& .MuiCheckbox-root": {
-                            color: `${colors.greenAccent[600]} !important`,
-                        },
-                        
-                        "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-                            color: `${colors.grey[100]} !important`,
-                        },
-                        '& .MuiDataGrid-main .MuiButtonBase-root.MuiCheckbox-root': {
-                            color: `${theme.palette.secondary.main} !important`
+            <FlexBetween mb="20px" sx={{width: "100%", height:"100%", alignItems: "flex-start", maxWidth: "1440px"}}>
+                {/* HEADER */}
+                <FlexBetween sx={{flexDirection: "row", width: "inherit", flexGrow: 0}}>
+                    <Box sx={{flexGrow: 1}}>  
+                        <Header title="Products"/>
+                    </Box>
+                    <Box sx={{flexGrow: 0, height: "inherit"}}>  
+                        {rowSelectionModel.length > 0 && 
+                            <ScapSecondaryButton onClick={()=>{handleDeleteRow(rowSelectionModel)}} color="primary" variant="contained" sx={{padding: "5px 13px 5px 13px"}} >
+                                Delete
+                            </ScapSecondaryButton>
                         }
-                    }}
-                >
-                <DataGrid
-                    loading={false}
-                    checkboxSelection={true} 
-                    rowHeight={85} 
-                    disableRowSelectionOnClick 
-                    rows={rows} 
-                    columns={columns}
-                    slots={{
-                        toolbar: GridToolbar,
-                    }}
-                    onRowSelectionModelChange={(newRowSelectionModel) => {
-                        setRowSelectionModel(newRowSelectionModel);
-                      }}
-                    rowSelectionModel={rowSelectionModel}
-                    componentsProps={{
-                        panel: {
-                            sx: {
-                                '& .MuiTypography-root': {
-                                    color: colors.grey[100],
-                                },
-                                '& .MuiInputLabel-root.Mui-focused':{
-                                    color: theme.palette.secondary.main
-                                },
-                                '& .MuiDataGrid-paper': {
-                                    backgroundColor: theme.palette.mode === "dark" ? theme.palette.primary.main : "#efefef",
-                                },
-                                "& .MuiButtonBase-root.MuiSwitch-switchBase.Mui-checked":{
-                                    color: theme.palette.secondary.main,
-                                },
-                                "& .MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track": {
-                                    backgroundColor: theme.palette.secondary.main
-                                },
-                                "& .MuiInput-root:after": {
-                                    borderBottom: `2px ${theme.palette.secondary.main} solid` 
-                                },
-                                "& .MuiDataGrid-panelFooter .MuiButtonBase-root.MuiButton-root":{
-                                    color: theme.palette.secondary.main
-                                }
+                        <ScapPrimaryButton onClick={()=>{navigatePage("/scenes/products/list/create")}} color="primary" variant="contained" sx={{padding: "5px 13px 5px 13px", ml: "12px"}} >
+                            Add Product
+                        </ScapPrimaryButton>
+                    </Box>
+                </FlexBetween>
+                {/* BODY */}
+                <FlexContainer m="25px 0 0 0" sx={{width: "100%", flexDirection: "column", flexGrow: 1}}>
+                    <Box
+                        sx={{
+                            flexGrow: 1,
+                            width: "inherit",
+                            "& .MuiDataGrid-root": {
+                                border: "none",
                             },
-                        },
-                    }}
-                />
-                </Box>
+                            "& .MuiDataGrid-cell": {
+                                borderTop:  'none',
+                                borderBottom: `1px ${hex2rgb(theme.palette.primary.light, "50").rgb} solid !important`,
+                                fontSize: "13px",
+                                cursor:"pointer"
+                            },
+                            "& .name-column--cell": {
+                                color: colors.greenAccent[700],
+                            },
+                            "& .MuiDataGrid-columnHeaders": {
+                                backgroundColor: theme.palette.mode === "dark" ? theme.palette.primary.dark : hex2rgb(theme.palette.primary.light, "60").rgb,
+                                borderColor: hex2rgb(theme.palette.primary.light, "50").rgb,
+                                borderBottom: "none",
+                                fontWeight: 900,
+                                textTransform: "uppercase",
+                            },
+                            "& .MuiDataGrid-virtualScroller": {
+                                // backgroundColor: theme.palette.background.default,
+                            },
+                            "& .MuiDataGrid-row.Mui-selected": {
+                                backgroundColor: hex2rgb(theme.palette.primary.light, "10").rgb,
+                            },
+                            "& .MuiDataGrid-footerContainer": {
+                                borderTop:  `none`,
+                                borderBottom: "none",
+                                backgroundColor: theme.palette.primary.main,
+                            },
+                            "& .MuiCheckbox-root": {
+                                color: `${colors.greenAccent[600]} !important`,
+                            },
+                            
+                            "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+                                color: `${colors.grey[100]} !important`,
+                            },
+                            '& .MuiDataGrid-main .MuiButtonBase-root.MuiCheckbox-root': {
+                                color: `${theme.palette.secondary.main} !important`
+                            }
+                        }}
+                    >
+                    <DataGrid
+                        autoHeight
+                        loading={false}
+                        checkboxSelection={true} 
+                        rowHeight={85} 
+                        disableRowSelectionOnClick 
+                        rows={rows} 
+                        columns={columns}
+                        slots={{
+                            toolbar: GridToolbar,
+                        }}
+                        onRowSelectionModelChange={(newRowSelectionModel) => {
+                            setRowSelectionModel(newRowSelectionModel);
+                        }}
+                        rowSelectionModel={rowSelectionModel}
+                        componentsProps={{
+                            panel: {
+                                sx: {
+                                    '& .MuiTypography-root': {
+                                        color: colors.grey[100],
+                                    },
+                                    '& .MuiInputLabel-root.Mui-focused':{
+                                        color: theme.palette.secondary.main
+                                    },
+                                    '& .MuiDataGrid-paper': {
+                                        backgroundColor: theme.palette.mode === "dark" ? theme.palette.primary.main : "#efefef",
+                                    },
+                                    "& .MuiButtonBase-root.MuiSwitch-switchBase.Mui-checked":{
+                                        color: theme.palette.secondary.main,
+                                    },
+                                    "& .MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track": {
+                                        backgroundColor: theme.palette.secondary.main
+                                    },
+                                    "& .MuiInput-root:after": {
+                                        borderBottom: `2px ${theme.palette.secondary.main} solid` 
+                                    },
+                                    "& .MuiDataGrid-panelFooter .MuiButtonBase-root.MuiButton-root":{
+                                        color: theme.palette.secondary.main
+                                    }
+                                },
+                            },
+                        }}
+                    />
+                    </Box>
+                </FlexContainer>
+                
                 <Box sx={{flexGrow: 0, height: "10px", width: "100%"}}></Box>
             </FlexBetween>
-        </FlexBetween>
         </FlexBetween>
     )
 }

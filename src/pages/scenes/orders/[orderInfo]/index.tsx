@@ -60,16 +60,17 @@ const OrderDetails:React.FC<OrderDetailsProps> = () => {
             <FlexBetween mb="20px" sx={{width: "100%", height:"100%", alignItems: "flex-start", maxWidth: "1440px"}}>
                 {/* HEADER */}
                 <FlexBetween sx={{flexDirection: "row", width: "100%", flexGrow: 0}}>
-                    <Box sx={{flexGrow: 1}}>  
-                        <IconButton 
-                            size="large" 
-                            aria-label="Back" 
-                            color="inherit" 
-                            sx={{}}
-                            onClick={() => {navigatePage("/scenes/orders")}}
-                        >
-                            <ArrowBackIosOutlined sx={{fontSize: 18, color: theme.palette.text.secondary}}/>
-                        </IconButton>
+                <Box sx={{flexGrow: 1, display: "flex", flexDirection: "row"}}>  
+                        <Box sx={{mr: 2}} >
+                            <IconButton 
+                                size="large" 
+                                aria-label="Back" 
+                                color="inherit" 
+                                onClick={() => {navigatePage("/scenes/orders")}}
+                            >
+                                <ArrowBackIosOutlined sx={{fontSize: 18, color: theme.palette.text.secondary}}/>
+                            </IconButton>
+                        </Box>
                         <Header title="#1043" subtitle="December 2, 2022 at 12:21 am" />
                     </Box>
                     <Box sx={{flexGrow: isMobile ? 0 : 1, justifyContent: "center", display: "flex", height: "100%", p: "10px 0"}}> 
@@ -95,7 +96,7 @@ const OrderDetails:React.FC<OrderDetailsProps> = () => {
                     <PageContentLayout leftWidth="70%" rightWidth="30%" pageType="noHeight">
                         {/* LEFT */}
                         <FlexBetween sx={{width: "100%", height: "100%", alignItems: "flex-start" }} >
-                            <FlexBetween sx={{width: "100%", mr: isMobile ? 3 : 0}} >
+                            <FlexBetween sx={{width: "100%", pr: isMobile ? 3 : 0}} >
                                 {/* Actions */}
                                 {(!isMobile && toggleActions) && 
                                     <FlexContainer>

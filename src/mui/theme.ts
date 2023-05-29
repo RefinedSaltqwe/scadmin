@@ -200,7 +200,7 @@ export const themeSettings = (mode:any) => {
             secondary: "#6c737f", //Grey
           },
           background: {
-            default: "#f8f9fa", // Main BG
+            default: "#f1f2f4", // Main BG
           },
         }),
     },
@@ -262,6 +262,9 @@ export const themeSettings = (mode:any) => {
               "&:hover": {
                 backgroundColor: mode === "dark" ? colors.darkBlueAccent[500] : "#efefef",
               }
+            },
+            "&:hover": {
+              backgroundColor: mode === "dark" ? colors.darkBlueAccent[500] : "#ffffff",
             }
           }
         }

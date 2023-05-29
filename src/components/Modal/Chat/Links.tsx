@@ -9,8 +9,6 @@ import { auth, firestore } from '@/firebase/clientApp';
 import { FIREBASE_ERRORS } from '@/firebase/errors';
 import useMediaQueryHook from '@/hooks/useMediaQueryHook';
 import useNavigation from '@/hooks/useNavigation';
-import useRgbConverter from '@/hooks/useRgbConverter';
-import { tokens } from '@/mui/theme';
 import { Backdrop, Box, Chip, CircularProgress, Divider, Fade, Modal, Stack, Typography, useTheme } from '@mui/material';
 import { addDoc, collection, doc, runTransaction, serverTimestamp, Timestamp } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
@@ -25,10 +23,8 @@ const Links:React.FC<LinksProps> = () => {
 
     const [user] = useAuthState(auth);
     const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
     const { isMobile } = useMediaQueryHook();
     const { navigatePage } = useNavigation();
-    const { hex2rgb } = useRgbConverter();
     const [open, setOpen] = useRecoilState(modalLinksOpen);
     const setChatThreadsValue = useSetRecoilState(chatThreadsState)
     const [linksAtomValue, setLinksAtomValue] = useRecoilState(linksAtomState);
