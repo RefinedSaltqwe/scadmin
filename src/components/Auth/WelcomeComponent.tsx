@@ -23,7 +23,7 @@ const WelcomeComponent:React.FC = () => {
                     color: theme.palette.text.secondary
                 }}
             >
-                A professional kit that comes with ready-to-use MUI components developed with one common goal in mind, help you build faster & beautiful applications.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
             </Typography>
         </>
     )

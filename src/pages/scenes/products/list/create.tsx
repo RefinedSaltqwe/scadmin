@@ -1,4 +1,9 @@
+import { Product, defaultProduct, productState } from '@/atoms/productsAtom';
 import ImageListItems from '@/components/Chat/ChatMessagesComponents/ImageListItems';
+import BasicDetails from '@/components/Product/BasicDetails';
+import Inventory from '@/components/Product/Inventory';
+import Media from '@/components/Product/Media';
+import Pricing from '@/components/Product/Pricing';
 import ProductDetailsActive from '@/components/Product/ProductDetailsActive';
 import CollectionsInput from '@/components/Product/ProductOrganization/CollectionsInput';
 import ProductCategory from '@/components/Product/ProductOrganization/ProductCategory';
@@ -6,6 +11,7 @@ import ProductTypeInput from '@/components/Product/ProductOrganization/ProductTy
 import ProductVendorInput from '@/components/Product/ProductOrganization/ProductVendorInput';
 import TagsInput from '@/components/Product/ProductOrganization/TagsInput';
 import ProductVariant from '@/components/Product/ProductVariant';
+import Shipping from '@/components/Product/Shipping';
 import AlertInfo from '@/components/ScapComponents/AlertInfo';
 import Dropzone from '@/components/ScapComponents/Dropzone';
 import FlexBetween from '@/components/ScapComponents/FlexBetween';
@@ -18,11 +24,13 @@ import TextEditor from '@/components/ScapComponents/TextEditor';
 import useMediaQueryHook from '@/hooks/useMediaQueryHook';
 import useNavigation from '@/hooks/useNavigation';
 import useRgbConverter from '@/hooks/useRgbConverter';
-import { AddPhotoAlternateOutlined, ArrowBackIosOutlined, HelpOutline } from '@mui/icons-material';
+import { ArrowBackIosOutlined, HelpOutline } from '@mui/icons-material';
 import { Box, Checkbox, Divider, FormControl, FormControlLabel, FormGroup, IconButton, InputAdornment, List, MenuItem, Radio, RadioGroup, Select, Stack, TextField, Tooltip, Typography, useTheme } from '@mui/material';
+import { title } from 'process';
 import React, { useState } from 'react';
 import { IMaskInput } from 'react-imask';
 import { NumericFormat, NumericFormatProps } from 'react-number-format';
+import { useSetRecoilState } from 'recoil';
 
 type CreateProductProps = {
     
@@ -33,26 +41,7 @@ export interface FormatProps {
     name: string;
 }
 
-const WeightValueMask = React.forwardRef<HTMLElement, FormatProps>(
-    function WeightValueMask(props, ref) {
-      const { onChange, ...other } = props;
-      return (
-        <IMaskInput
-          {...other}
-          mask="#.00"
-          definitions={{
-            '#': /[0-9]/
-          }}
-          inputRef={ref}
-          onAccept={(value: any) => onChange({ target: { name: props.name, value } })}
-          onChange={()=>{}}
-          overwrite
-        />
-      );
-    },
-);
-
-const CurrencyNumericFormat = React.forwardRef<NumericFormatProps, FormatProps>(
+export const CurrencyNumericFormat = React.forwardRef<NumericFormatProps, FormatProps>(
     function CurrencyNumericFormat(props, ref) {
         const { onChange, ...other } = props;
 
@@ -76,26 +65,14 @@ const CurrencyNumericFormat = React.forwardRef<NumericFormatProps, FormatProps>(
     },
 );
 
-interface WeightState {
-    shippingWeight: string;
-    weightMode: string;
-    shippingType: string;
-}
-
 const CreateProduct:React.FC<CreateProductProps> = () => {
 
     const theme = useTheme();
     const { isMobile } = useMediaQueryHook();
     const { hex2rgb } = useRgbConverter();
     const { navigatePage } = useNavigation();
-    const [selectedImageBlob, setSelectedImageBlob] = useState<Blob | Blob[]>();
-    const [selectedImageBase64, setSelectedImageBase64] = useState<string | string[] | undefined>([]);
+    const setProductValue = useSetRecoilState(productState);
     const [errorMessage, setErrorMessage] = useState("");
-    const [shippingInfo, setShippingInfo] = useState<WeightState>({
-        shippingWeight: '',
-        weightMode: 'kg',
-        shippingType: "physicalproduct"
-    });
 
     let OPACITY = "30"
     
@@ -103,15 +80,14 @@ const CreateProduct:React.FC<CreateProductProps> = () => {
         OPACITY= "3";
     }
 
-    const handleShippingWeightInfo = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setShippingInfo((prev) => ({
-          ...prev,
-          [event.target.name]: event.target.value,
-        }));
-    };
-
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event.target.value)
+        setProductValue((prev) => ({
+            ...prev,
+            product: {
+                ...prev.product,
+                [event.target.name]: event.target.value
+            } as Product
+        }));
     };
 
     return (
@@ -187,333 +163,18 @@ const CreateProduct:React.FC<CreateProductProps> = () => {
                                             </Box>
                                         </FlexContainer>
                                     }
-                                    {/* Fulfillment CONTAINER */}
-                                    <FlexContainer
-                                        sx={{
-                                            '& .ql-snow .ql-tooltip':{
-                                                boxShadow: "0px 0px 0px #ddd",
-                                                left: "0"
-                                            },
-                                            '& .quillTextEditor > div': {
-                                                backgroundColor: "transparent",
-                                                borderColor: hex2rgb(theme.palette.primary.light, '100').rgb,
-                                            },
-                                            '& .quillTextEditor > div > span > span > span::before': {
-                                                color: theme.palette.text.primary
-                                            },
-                                            '& .quillTextEditor .ql-stroke': {
-                                                stroke: `${theme.palette.text.primary} !important`
-                                            },
-                                            '& .quillTextEditor .ql-fill': {
-                                                fill: `${theme.palette.text.primary} !important`
-                                            },
-                                            '& .editorClassName': {
-                                                padding: "0 5px",
-                                                border: `1px solid ${hex2rgb(theme.palette.primary.light, '60').rgb}`
-                                            },
-                                            '& .quillTextEditor .ql-toolbar': {
-                                                marginBottom: "12px",
-                                                borderRadius: "8px"
-                                            },
-                                            '& .quillTextEditor .ql-container': {
-                                                height: "250px",
-                                                border: `1px solid ${hex2rgb(theme.palette.primary.light, '100').rgb} !important`,
-                                                borderRadius: "8px"
-                                            },
-                                            '& .quillTextEditor .ql-picker-label:hover::before': {
-                                                color: `${theme.palette.secondary.main} !important`
-                                            },
-                                            ' .quillTextEditor .ql-picker-label:hover > svg > polygon.ql-stroke':{
-                                                stroke: `${theme.palette.secondary.main} !important`
-                                            },
-                                            '& .quillTextEditor .ql-picker-item:hover, .quillTextEditor .ql-selected':{
-                                                color: `${theme.palette.secondary.main} !important`
-                                            },
-                                            '& .quillTextEditor button:hover .ql-stroke, .quillTextEditor button.ql-active .ql-stroke': {
-                                                stroke: `${theme.palette.secondary.main} !important`
-                                            },
-                                            '& .quillTextEditor button:hover .ql-fill, .quillTextEditor button.ql-active .ql-fill': {
-                                                fill: `${theme.palette.secondary.main} !important`
-                                            },
-                                            '& .quillTextEditor .ql-active': {
-                                                color: `${theme.palette.secondary.main} !important`
-                                            },
-                                            '& .quillTextEditor .ql-container > .ql-editor.ql-blank::before': {
-                                                color: `${theme.palette.text.secondary} !important`,
-                                                fontStyle: "normal",
-                                            },
-                                            // '& .quillTextEditor .ql-container:active':{
-                                            //     border: `${theme.palette.secondary.main} 3px solid !important`
-                                            // }
-                                        }}
-                                    >
-                                        {/* Basic Details */}
-                                        <Box sx={{width: "100%", display:"flex", flexDirection: "row"}}>
-                                            <Box sx={{flexGrow: 1, display: "flex", alignItems: "center"}}>
-                                                <Typography variant="h5" sx={{fontWeight: 600}}>Basic Details</Typography>
-                                            </Box>
-                                        </Box>
-                                        <Box sx={{margin: "24px 0 20px 0"}}>
-                                            <ScapPrimaryTextField type="text" label="Title" name="text" onChange={onChange}/>
-                                        </Box>
-                                        <TextEditor/>
-                                    </FlexContainer>
+                                    {/* Basic Details */}
+                                    <BasicDetails />
                                     {/* Media */}
-                                    <FlexContainer>
-                                        <Box sx={{width: "100%", display:"flex", flexDirection: "row"}}>
-                                            <Box sx={{flexGrow: 1, display: "flex", alignItems: "center"}}>
-                                                <Typography variant="h5" sx={{fontWeight: 600}}>Media</Typography>
-                                            </Box>
-                                        </Box>
-                                        <AlertInfo text="Drag 'n' drop images, or click to select images. Up to 10 images at a time." />
-                                        {selectedImageBase64 && selectedImageBase64.length > 0 ? (
-                                            <FlexBetween sx={{ width: "100%", marginY: "8px", justifyContent: "center"}}>
-                                                {/* Image List */}
-                                                {selectedImageBase64.length > 0 &&
-                                                    <ImageListItems selectedImagesBase64={selectedImageBase64 as string []} setSelectedImagesBase64={setSelectedImageBase64 as React.Dispatch<React.SetStateAction<string[]>>}/>
-                                                }
-                                                {/* ADD IMAGE */}
-                                                <Box sx={{width: isMobile ? "21%" : "30%", pb: isMobile ? "21%" : "30%", position: "relative", borderRadius: "12px", m: isMobile ? "15px" : "10px", cursor: "pointer"}}>
-                                                    <Box sx={{position: "absolute", height: "100%", width: "100%"}}>
-                                                        {/* <FlexBetween sx={{height: "100%", width: "100%", justifyContent: "center", borderWidth: "2px", borderRadius: "12px", borderColor: hex2rgb(theme.palette.primary.light, "80").rgb, borderStyle: "dashed"}}>
-                                                            <AddPhotoAlternateOutlined sx={{width: "25%", height: "25%", color: hex2rgb(theme.palette.primary.light, "80").rgb}} />
-                                                        </FlexBetween> */}
-                                                        <Dropzone size="50%" multipleFiles={true} setSelectedImageBlob={setSelectedImageBlob} setSelectedImageBase64={setSelectedImageBase64} />
-                                                    </Box>
-                                                </Box>
-                                            </FlexBetween> 
-                                        ):(
-                                            <FlexBetween sx={{ width: "100%", mt: "24px", mb: "8px", justifyContent: "center", height: "100%"}}>
-                                                <Dropzone size="12%" multipleFiles={true} setSelectedImageBlob={setSelectedImageBlob} setSelectedImageBase64={setSelectedImageBase64} />
-                                            </FlexBetween>
-                                        )}
-                                    </FlexContainer>
+                                    <Media />
                                     {/* Pricing */}
-                                    <FlexContainer>
-                                        <Box sx={{width: "100%", display:"flex", flexDirection: "row"}}>
-                                            <Box sx={{flexGrow: 1, display: "flex", alignItems: "center"}}>
-                                                <Typography variant="h5" sx={{fontWeight: 600}}>Pricing</Typography>
-                                            </Box>
-                                        </Box>
-                                        <Box
-                                            sx={{
-                                                margin: "15px 0 5px 0", 
-                                                display: "flex",
-                                                flexDirection: {xs: "column", md: "row"},
-                                            }} 
-                                        >
-                                            <FlexBetween 
-                                                sx={{
-                                                    width: { xs: '100%', md: '50%' },
-                                                    mb: isMobile ? "0" : "15px"
-                                                }} 
-                                            >
-                                                <TextField
-                                                    fullWidth
-                                                    helperText="Please enter the price. (Required)"
-                                                    id="price-adornment-amount"
-                                                    label="Price*"
-                                                    name="Price"
-                                                    placeholder='0.00'
-                                                    InputProps={{
-                                                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                                                        inputComponent: CurrencyNumericFormat as any,
-                                                    }}
-                                                    sx={{ m: 1 }}
-                                                />
-                                            </FlexBetween>
-                                            <FlexBetween 
-                                                sx={{
-                                                    width: { xs: '100%', md: '50%' },
-                                                }} 
-                                            >
-                                                <TextField
-                                                    fullWidth
-                                                    helperText="Enter a value higher than your price. (Optional)"
-                                                    id="comapre-at-adornment-amount"
-                                                    label="Compare-at Price"
-                                                    name="CompareAtPrice"
-                                                    placeholder='0.00'
-                                                    InputProps={{
-                                                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                                                        endAdornment: (
-                                                            <Tooltip title="To display a markdown, enter a value higher than your price. Often shown with a strikethrough (e.g. $25.00).">
-                                                                <HelpOutline sx={{color: theme.palette.text.secondary}} />
-                                                            </Tooltip>
-                                                        ),
-                                                        inputComponent: CurrencyNumericFormat as any,
-                                                    }}
-                                                    sx={{ m: 1 }}
-                                                />
-                                            </FlexBetween>
-                                        </Box>
-                                        {/* CHECKBOX */}
-                                        <Box 
-                                            sx={{
-                                                width:"100%",
-                                                display: "flex",
-                                                margin: "0 8px 0 8px",
-                                                '& .Mui-checked': {
-                                                    color: `${theme.palette.secondary.main} !important`
-                                                }
-                                            }}
-                                        >
-                                            <FormGroup>
-                                                <FormControlLabel control={<Checkbox defaultChecked />} label="Charge tax on this product" />
-                                            </FormGroup>    
-                                        </Box>
-                                        <Divider sx={{marginY: "20px"}} />
-                                        <Box
-                                            sx={{
-                                                margin: "15px 0 0 0", 
-                                                display: "flex",
-                                                flexDirection: {xs: "column", md: "row"},
-                                            }} 
-                                        >
-                                            <FlexBetween 
-                                                sx={{
-                                                    width: { xs: '100%', md: '50%' }
-                                                }} 
-                                            >
-                                                <TextField
-                                                    fullWidth
-                                                    helperText="Tax charged on this product."
-                                                    id="tax-adornment-amount"
-                                                    label="Cost per Item"
-                                                    name="CostPerItem"
-                                                    placeholder='0.00'
-                                                    InputProps={{
-                                                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                                                        endAdornment: (
-                                                            <Tooltip title="Customers won't see this.">
-                                                                <HelpOutline sx={{color: theme.palette.text.secondary}} />
-                                                            </Tooltip>
-                                                        ),
-                                                        inputComponent: CurrencyNumericFormat as any,
-                                                    }}
-                                                    sx={{ m: 1 }}
-                                                />
-                                            </FlexBetween>
-                                        </Box>
-                                    </FlexContainer>
+                                    <Pricing />
                                     {/* Inventory */}
-                                    <FlexContainer>
-                                        <Box sx={{width: "100%", display:"flex", flexDirection: "row"}}>
-                                            <Box sx={{flexGrow: 1, display: "flex", alignItems: "center"}}>
-                                                <Typography variant="h5" sx={{fontWeight: 600}}>Inventory</Typography>
-                                            </Box>
-                                        </Box>
-                                        <Box 
-                                            sx={{
-                                                width:"100%",
-                                                display: "flex",
-                                                margin: "15px 0 20px 0",
-                                                flexDirection: {xs: "column", md: "row"},
-                                            }}
-                                        >
-                                            <Box sx={{width: { xs: '100%', md: '50%' }, m: {xs: "8px 0", md: "8px"} }}>
-                                                <ScapPrimaryTextField type="text" label="SKU (Stock Keeping Unit)" name="sku" onChange={onChange}/>
-                                            </Box>
-                                            <Box sx={{width: { xs: '100%', md: '50%' }, m: {xs: "8px 0", md: "8px"}  }}>
-                                                <ScapPrimaryTextField type="text" label="Barcode (ISBN, UPC, GTIN, etc.)" name="sku" onChange={onChange}/>
-                                            </Box>
-                                        </Box>
-                                        <Box 
-                                            sx={{
-                                                width:"100%",
-                                                display: "flex",
-                                                margin: "15px 8px 0 8px",
-                                                '& .Mui-checked': {
-                                                    color: `${theme.palette.secondary.main} !important`
-                                                }
-                                            }}
-                                        >
-                                            <FormGroup>
-                                                <FormControlLabel control={<Checkbox defaultChecked />} label="Track quantity" />
-                                                <FormControlLabel control={<Checkbox />} label="Continue selling when out of stock" />
-                                            </FormGroup>    
-                                        </Box>
-                                    </FlexContainer>
+                                    <Inventory />
                                     {/* Shipping */}
-                                    <FlexContainer>
-                                        <Box sx={{width: "100%", display:"flex", flexDirection: "row"}}>
-                                            <Box sx={{flexGrow: 1, display: "flex", alignItems: "center"}}>
-                                                <Typography variant="h5" sx={{fontWeight: 600}}>Shipping</Typography>
-                                            </Box>
-                                        </Box>
-                                        <FormControl sx={{marginY: "15px"}} >
-                                            <RadioGroup
-                                                row
-                                                aria-labelledby="Shipping Type Button Group"
-                                                name="Shipping-Type-Button-Group"
-                                                sx={{
-                                                    '& .MuiButtonBase-root.MuiRadio-root.Mui-checked':{
-                                                        color: theme.palette.secondary.main
-                                                    }
-                                                }}
-                                                value={shippingInfo.shippingType}
-                                                onChange={(e) => {setShippingInfo({
-                                                    ...shippingInfo,
-                                                    shippingType: e.target.value,
-                                                });}}
-                                            >
-                                                <FormControlLabel value="physicalproduct" control={<Radio />} label="Physical Product"/>
-                                                <FormControlLabel value="digitalproduct" control={<Radio />} label="Digital Product or Service" />
-                                            </RadioGroup>
-                                        </FormControl>
-                                        {/* <Divider /> */}
-                                        <Box 
-                                            sx={{
-                                                width:"100%",
-                                                display: "flex",
-                                                margin: "0 0 20px 0",
-                                                flexDirection: {xs: "column", md: "row"},
-                                            }}
-                                        >
-                                            {shippingInfo.shippingType === "physicalproduct" ? (
-                                                <>
-                                                    <Box sx={{width: { xs: '100%', md: '30%' }, m: {xs: "8px 0", md: "8px"} }}>
-                                                        <TextField
-                                                            fullWidth
-                                                            value={shippingInfo.shippingWeight}
-                                                            onChange={handleShippingWeightInfo}
-                                                            id="shipping-weight-adornment-amount"
-                                                            label="Shipping Weight"
-                                                            name="shippingWeight"
-                                                            placeholder='0.00'
-                                                            InputProps={{
-                                                                inputComponent: CurrencyNumericFormat as any,
-                                                            }}
-                                                        />
-                                                    </Box>
-                                                    <Box sx={{width: { xs: '100%', md: '10%' }, m: {xs: "8px 0", md: "8px"}  }}>
-                                                        <FormControl fullWidth>
-                                                            <Select
-                                                                labelId="demo-simple-select-label"
-                                                                id="demo-simple-select"
-                                                                value={shippingInfo.weightMode}
-                                                                name="weightMode"
-                                                                onChange={(e) => {setShippingInfo({
-                                                                    ...shippingInfo,
-                                                                    weightMode: e.target.value,
-                                                                });}}
-                                                            >
-                                                                <MenuItem value="lb">lb</MenuItem>
-                                                                <MenuItem value="oz">oz</MenuItem>
-                                                                <MenuItem value="kg">kg</MenuItem>
-                                                                <MenuItem value="g">g</MenuItem>
-                                                            </Select>
-                                                        </FormControl>
-                                                    </Box>
-                                                </>
-                                            ):(
-                                                <Typography>{`Customers won't enter shipping details at checkout.`}</Typography>
-                                            )}
-                                            
-                                        </Box>
-                                    </FlexContainer>
+                                    <Shipping />
                                     {/* Variants */}
-                                    <ProductVariant setErrorMessage={setErrorMessage}/>
+                                    <ProductVariant saveChangesBar={true} setErrorMessage={setErrorMessage}/>
                                 </FlexBetween>
                             </FlexBetween>
                             {/* RIGHT */}
@@ -538,7 +199,7 @@ const CreateProduct:React.FC<CreateProductProps> = () => {
                                     }
                                     
                                     {/* Product Organization */}
-                                    <FlexContainer sx={{mb: false ? isMobile ? "24px" : "88px" : "24px"}}>
+                                    <FlexContainer sx={{mb: true ? isMobile ? "24px" : "88px" : "24px"}}>
                                         {/* HEADER */}
                                         <Box sx={{width: "100%", display:"flex", flexDirection: "row"}}>
                                             <Box sx={{flexGrow: 1, display: "flex", alignItems: "center"}}>
@@ -559,28 +220,6 @@ const CreateProduct:React.FC<CreateProductProps> = () => {
                                                     <CollectionsInput theme={theme} optionValues={options100} />
                                                     {/* TAGS */} 
                                                     <TagsInput theme={theme} optionValues={options100} />
-                                                    
-                                                    {/* <Autocomplete
-                                                        value={value}
-                                                        multiple
-                                                        id="tags-outlined"
-                                                        onChange={(event, newValue) => {
-                                                            setValue(newValue)
-                                                        }}
-                                                        options={options100.map((option) => option.title)}
-                                                        // getOptionLabel={(option) => option}
-                                                        defaultValue={[options100[13]]}
-                                                        filterSelectedOptions
-                                                        freeSolo
-                                                        limitTags={2}
-                                                        renderInput={(params) => (
-                                                        <TextField
-                                                            {...params}
-                                                            label="Tags"
-                                                            placeholder="Find or create tags"
-                                                        />
-                                                        )}
-                                                    /> */}
                                                 </Stack>
                                             </FlexBetween>
                                         </Box>
@@ -591,7 +230,7 @@ const CreateProduct:React.FC<CreateProductProps> = () => {
                     </Box>
                 </FlexBetween>
             </FlexBetween>
-            {false && <SaveChangesBar errorMessage={errorMessage} />}
+            {true && <SaveChangesBar errorMessage={errorMessage} />}
         </>
     )
 }

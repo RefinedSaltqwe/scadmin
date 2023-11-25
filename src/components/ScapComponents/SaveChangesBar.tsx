@@ -5,6 +5,8 @@ import useRgbConverter from '@/hooks/useRgbConverter';
 import ScapPrimaryButton from './PrimaryButton';
 import ScapSecondaryButton from './SecondaryButton';
 import { red } from '@mui/material/colors';
+import { useRecoilValue } from 'recoil';
+import { productState } from '@/atoms/productsAtom';
 
 type SaveChangesBarProps = {
     errorMessage: string;
@@ -14,6 +16,9 @@ const SaveChangesBar:React.FC<SaveChangesBarProps> = ({ errorMessage }) => {
 
     const theme = useTheme();
     const { hex2rgb } = useRgbConverter();
+    const productValue = useRecoilValue(productState);
+    console.log("🚀 ~ file: SaveChangesBar.tsx:20 ~ productValue:", productValue);
+    
     
     return (
         <FlexBetween 

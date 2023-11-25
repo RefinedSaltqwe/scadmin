@@ -1,12 +1,14 @@
-import { Box, Divider, TextField, useTheme } from '@mui/material';
-import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
-import FlexBetween from './FlexBetween';
-import { DataGrid, GridRowSelectionModel, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton } from '@mui/x-data-grid';
 import useRgbConverter from '@/hooks/useRgbConverter';
 import { tokens } from '@/mui/theme';
-import { VariantObject, VariantOption, VariantValue } from '../Product/ProductVariant';
-import { NumericFormat, NumericFormatProps } from 'react-number-format';
 import { FormatProps } from '@/pages/scenes/products/list/[details]';
+import { Box, Divider, TextField, useTheme } from '@mui/material';
+import { DataGrid, GridRowSelectionModel, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton } from '@mui/x-data-grid';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { NumericFormat, NumericFormatProps } from 'react-number-format';
+import { VariantOption, VariantValue } from '../Product/ProductVariant';
+import FlexBetween from './FlexBetween';
+import { useRecoilState } from 'recoil';
+import { productState } from '@/atoms/productsAtom';
 
 type ProductOptionDataGridProps = {
     variantOptionValuesParent: VariantOption[];
@@ -111,11 +113,16 @@ function DataGridInput(params: any){
                 name={fieldName}
                 type={inputType}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>)=>{
-                    setVariantDataGrid((prev: VariantObject) => ({ 
+                    // ! utro diri
+                    setVariantDataGrid((prev: VariantDataGrid) => ({ 
                         ...prev,
                         variantsDataGrid: prev.variantsDataGrid.map((item1) => 
                             item1.id === item.id 
-                                ? {...item1, [e.target.name]: e.target.value }
+                                ? e.target.name === 'variantComparePrice'
+                                    ? parseInt(e.target.value) >= parseInt(item1.variantPrice) 
+                                        ? {...item1, [e.target.name]: e.target.value }
+                                        : {...item1, variantComparePrice: item1.variantPrice }
+                                    : {...item1, [e.target.name]: e.target.value }
                                 : item1
                         )
                     })); 
@@ -278,8 +285,9 @@ const ProductOptionDataGrid:React.FC<ProductOptionDataGridProps> = ({ variantOpt
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const { hex2rgb } = useRgbConverter();
+    const [productValue, setProductValue] = useRecoilState(productState);
     const [rowSelectionModel, setRowSelectionModel] = useState<GridRowSelectionModel>([]);
-    const [variantDataGrid, setVariantDataGrid] = useState<VariantDataGrid>(defaultVariantDataGrid);
+    const [variantDataGrid, setVariantDataGrid] = useState<VariantDataGrid>(defaultVariantDataGrid); // ? Main 
     const builtvariantOptionValues = useMemo(() => variantDataGridBuilder(variantOptionValuesParent), [variantOptionValuesParent]);
     const firstRenderControl = useRef(false);
     // console.log(builtvariantOptionValues, variantDataGrid.variantsDataGrid);
@@ -319,6 +327,32 @@ const ProductOptionDataGrid:React.FC<ProductOptionDataGridProps> = ({ variantOpt
         firstRenderControl.current = true;
         //eslint-disable-next-line react-hooks/exhaustive-deps
     },[builtvariantOptionValues]);
+
+    useEffect(() => {
+        let timer = setTimeout(() => {
+            setProductValue((prev) => ({
+                ...prev,
+                variantsDataGrid: variantDataGrid.variantsDataGrid
+            }))
+        }, 2000);
+
+        return () => {
+            clearTimeout(timer);
+        }
+
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [variantDataGrid]);
+
+    // Pre-set
+    useEffect(() => {
+        if(productValue.variantsDataGrid.length > 0){
+            setVariantDataGrid((prev) => ({
+                ...prev,
+                variantsDataGrid: [...productValue.variantsDataGrid]
+            }));
+        }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+    },[]);
 
     const onEdit = React.useCallback((val: string) => {
         console.log("edit: ", val);

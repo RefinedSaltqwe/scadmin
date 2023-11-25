@@ -7,6 +7,8 @@ import FlexBetween from '../ScapComponents/FlexBetween';
 import FlexContainer from '../ScapComponents/FlexContainer';
 import ProductOptionDataGrid from '../ScapComponents/ProductOptionDataGrid';
 import OptionValueInput from './ProductVariant/OptionValueInput';
+import { useRecoilState } from 'recoil';
+import { productState } from '@/atoms/productsAtom';
 
 export interface VariantOption {
     name: string;
@@ -28,26 +30,26 @@ export interface VariantValue {
 export interface VariantObject {
     variantOptionValues: VariantOption [];
     selectedOptionNames: string [];
-    variantsDataGrid: VariantValue [];
 }
 
 const defaultVariantObject: VariantObject = {
     variantOptionValues: [],
     selectedOptionNames: [],
-    variantsDataGrid: []
 }
 
 const VARIANT_OPTION_NAMES = ["Size", "Color", "Material", "Style"];
 
 type ProductVariantProps = {
-    setErrorMessage: (value: React.SetStateAction<string>) => void
+    setErrorMessage: (value: React.SetStateAction<string>) => void;
+    saveChangesBar: boolean;
 };
 
-const ProductVariant:React.FC<ProductVariantProps> = ({ setErrorMessage }) => {
+const ProductVariant:React.FC<ProductVariantProps> = ({ setErrorMessage, saveChangesBar }) => {
 
     const theme = useTheme();
     const { hex2rgb } = useRgbConverter();
     const { isMobile } = useMediaQueryHook();
+    const [productValue, setProductValue] = useRecoilState(productState);
     const [variant, setVariant] = useState<VariantObject>(defaultVariantObject);
     const [variantPrevVal, setVariantPrevVal] = useState<VariantObject>(defaultVariantObject);
     let variantOptionChangeType = useRef("add");
@@ -75,13 +77,41 @@ const ProductVariant:React.FC<ProductVariantProps> = ({ setErrorMessage }) => {
     //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [variant.variantOptionValues]);
 
+    useEffect(() => {
+        let timer = setTimeout(() => {
+            if(variant.variantOptionValues[0] && variant.variantOptionValues[0].values.length === 0 ){
+                setProductValue((prev) => ({
+                    ...prev,
+                    variantOptionValues: [...variant.variantOptionValues],
+                    variantsDataGrid: []
+                }));
+            } else {
+                setProductValue((prev) => ({
+                    ...prev,
+                    variantOptionValues: [...variant.variantOptionValues]
+                }));
+            }
+        }, 200);
+
+        return () => {
+            clearTimeout(timer);
+        }
+
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [variant.variantOptionValues]);
+    
+    //Pre-sets
     useEffect(()=>{
         setVariantPrevVal(variant);
+        setVariant((prev) => ({
+            ...prev,
+            variantOptionValues: [...productValue.variantOptionValues]
+        }));
         //eslint-disable-next-line react-hooks/exhaustive-deps
-    },[])
+    },[]);
 
     return (
-        <FlexContainer sx={{mb: false ?  isMobile ? "88px" : "24px" : "24px", p:"0 0 10px 0"}}>
+        <FlexContainer sx={{mb: saveChangesBar ?  isMobile ? "88px" : "24px" : "24px", p:"0 0 10px 0"}}>
             <Box sx={{display:"flex", flexDirection: "row", m: "25px 25px 10px 25px"}}>
                 <Box sx={{flexGrow: 1, display: "flex", alignItems: "center"}}>
                     <Typography variant="h5" sx={{fontWeight: 600}}>Variants</Typography>
@@ -116,7 +146,7 @@ const ProductVariant:React.FC<ProductVariantProps> = ({ setErrorMessage }) => {
                         <Typography> Add Options like size or color</Typography>
                     </FlexBetween>
                 }
-                {/* WORK IN PROGRESS */}
+                {/* Options */}
                 {variant.variantOptionValues.length > 0 && 
                     <>
                         <FlexBetween sx={{width: "100%", p: "10px 0", m:"0 25px 0 25px"}}>

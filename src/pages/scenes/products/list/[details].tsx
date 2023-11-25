@@ -164,7 +164,6 @@ const ProductDetails:React.FC<ProductDetailsProps> = () => {
                                 }
                             },
                         }}
-                    
                     >
                         <PageContentLayout leftWidth="70%" rightWidth="30%" pageType="noHeight">
                             {/* LEFT */}
@@ -513,7 +512,7 @@ const ProductDetails:React.FC<ProductDetailsProps> = () => {
                                         </Box>
                                     </FlexContainer>
                                     {/* Variants */}
-                                    <ProductVariant setErrorMessage={setErrorMessage}/>
+                                    <ProductVariant saveChangesBar={false} setErrorMessage={setErrorMessage}/>
                                 </FlexBetween>
                             </FlexBetween>
                             {/* RIGHT */}
